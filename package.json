@@ -4,9 +4,9 @@
   "description": "Functional css library",
   "main": "dist/index.min.css",
   "scripts": {
-    "build": "npm run clean && webpack",
+    "build": "npm run clean && webpack && rimraf dist/main.js",
     "clean": "rimraf dist/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
