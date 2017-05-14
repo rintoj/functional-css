@@ -11,7 +11,7 @@ const extractSass = new ExtractTextPlugin({
 module.exports = {
   bail: true,
   entry: [
-    path.resolve('./src/index.js')
+    path.resolve('./index.js')
   ],
   output: {
     path: path.resolve('./dist'),
