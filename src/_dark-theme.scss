@@ -11,6 +11,6 @@
   @include addColor(black, #000, #fff);
   @include addColor(error, #D02A2B, #fff);
   @include addColor(success, #29D185, #fff);
-  @include addColor(warn, #ffae27, #424242);
+  @include addColor(warning, #ffae27, #424242);
   @include addColor(divider, #263138);
 }
