@@ -1,0 +1,36 @@
+{
+  "name": "functional-css",
+  "version": "0.0.0",
+  "description": "Functional css library",
+  "main": "src/index.scss",
+  "scripts": {
+    "build": "npm run clean && webpack",
+    "clean": "rimraf dist/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rintoj/functional-css.git"
+  },
+  "keywords": [
+    "Functional",
+    "CSS",
+    "SCSS"
+  ],
+  "author": "Rinto Jose",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rintoj/functional-css/issues"
+  },
+  "homepage": "https://github.com/rintoj/functional-css#readme",
+  "devDependencies": {
+    "css-loader": "^0.28.1",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "node-sass": "^4.5.2",
+    "optimize-css-assets-webpack-plugin": "^1.3.1",
+    "rimraf": "^2.6.1",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.17.0",
+    "webpack": "^2.5.1"
+  }
+}

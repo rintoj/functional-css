@@ -1,0 +1,16 @@
+.light {
+  @include addColor(primary, #bcc6d0, #576d77);
+  @include addColor(primary-s1, #455A64, #d7e7ef);
+  @include addColor(primary-s2, #ecf0f3, #59666D);
+  @include addColor(primary-s3, #ced6de, #59666D);
+  @include addColor(secondary, #fff, #000);
+  @include addColor(secondary-s1, #e3e8ea, #618394);
+  @include addColor(secondary-s2, #9b9d9e, #618394);
+  @include addColor(accent, #03A9F4, #f3fbff);
+  @include addColor(white, #fff, #000);
+  @include addColor(black, #000, #fff);
+  @include addColor(error, #D02A2B, #fff);
+  @include addColor(success, #008428, #fff);
+  @include addColor(warn, #ffae27, #424242);
+  @include addColor(divider, #586971);
+}
