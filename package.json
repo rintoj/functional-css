@@ -2,7 +2,7 @@
   "name": "functional-css",
   "version": "0.0.0",
   "description": "Functional css library",
-  "main": "src/index.scss",
+  "main": "dist/index.min.css",
   "scripts": {
     "build": "npm run clean && webpack",
     "clean": "rimraf dist/",
