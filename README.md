@@ -9,18 +9,30 @@ npm install functional-css
 ```
 
 ## Usage
+
+### Webpack with JS ES6 / TypeScript
 ```ts
 import 'functional-css'
 ```
 
-## Color Theme
+### Webpack with ES5
+```js
+require('functional-css')
+```
 
-This module comes with the following color themes. Define the color name as a class on the `body` tag, then use colors as defined under [Colors Classes](#colors-classes)
-
-However you can define colors themes on your own as below. Colors are defined in pairs. The second color is the contrast color to the first.
-
+### With CSS/SCSS
 ```scss
 @import '~functional-css'
+```
+
+## Color Theme
+
+This module comes with the two color themes `dark` and `light`. Define the color name as a class on the `body` tag, then use colors as defined under [Colors Classes](#colors-classes)
+
+You can define colors themes on your own as below. Colors are defined in pairs. The second color is the contrast color to the first.
+
+```scss
+@import '~functional-css/src/mixins'
 .name-of-the-theme {
   @include addColor(primary, #2C3336, #d7e3ea);
   @include addColor(primary-s1, #162029, #abb4bd);
@@ -34,7 +46,7 @@ However you can define colors themes on your own as below. Colors are defined in
   @include addColor(black, #000, #fff);
   @include addColor(error, #D02A2B, #fff);
   @include addColor(success, #29D185, #fff);
-  @include addColor(warn, #ffae27, #424242);
+  @include addColor(warning, #ffae27, #424242);
   @include addColor(divider, #263138);
 }
 ```
@@ -145,7 +157,7 @@ However you can define colors themes on your own as below. Colors are defined in
 | .black | color: #fff; background-color: #000; |
 | .error | color: #fff; background-color: #D02A2B; |
 | .success | color: #fff; background-color: #29D185; |
-| .warn | color: #424242; background-color: #D1C829; |
+| .warning | color: #424242; background-color: #D1C829; |
 | .divider | background-color: #58656d; |
 
 ### Transparent Colors
