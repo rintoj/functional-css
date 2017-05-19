@@ -1,6 +1,6 @@
 .dark {
-  @include addColor(primary, #2C3336, #d7e3ea);
-  @include addColor(primary-s1, #162029, #abb4bd);
+  @include addColor(primary, #162029, #abb4bd);
+  @include addColor(primary-s1, #2C3336, #d7e3ea);
   @include addColor(primary-s2, #3C4549, #d3dce0);
   @include addColor(primary-s3, #58656d, #d3dce0);
   @include addColor(secondary, #fafafa, #4b585f);

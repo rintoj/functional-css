@@ -1,6 +1,6 @@
 # Functional CSS
 
-This module will let you seamlessly integrate functional css.
+This module will let you seamlessly integrate functional css. This also comes with a dark and light theme.
 
 ## Install
 
@@ -25,7 +25,28 @@ require('functional-css')
 @import '~functional-css'
 ```
 
-## Color Theme
+### Import what's required
+```ts
+// core functional-css classes
+import 'functional-css/dist/core.min.css'
+
+// light and dark themes
+import 'functional-css/dist/theme.min.css'
+
+// light theme
+import 'functional-css/dist/light-theme.min.css'
+
+// dark theme
+import 'functional-css/dist/dark-theme.min.css'
+```
+
+### Without Bundle
+
+```html
+ <link rel="stylesheet" media="all" href="./node_modules/functional-css/dist/index.min.css">
+```
+
+## Create Your Own Color Theme
 
 This module comes with the two color themes `dark` and `light`. Define the color name as a class on the `body` tag, then use colors as defined under [Colors Classes](#colors-classes)
 
@@ -104,62 +125,75 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 
 | Style | Css
 |-------|---------------------------------
-| .${color} | color: ${contrast}; background-color: ${value}; |
+| .${color} | background-color: ${value}; color: ${contrast}; |
 | .${color}-contrast | color: ${contrast}; |
 | .${color}-text | color: ${value}; |
 | .${color}-bg | background-color: ${value}; |
-| .${color}-b | border-color: ${value}; |
-| .${color}-bt | border-top-color: ${value}; |
-| .${color}-br | border-right-color: ${value}; |
-| .${color}-bb | border-bottom-color: ${value}; |
-| .${color}-bl | border-left-color: ${value}; |
-| .${color}-o | outline-color: ${value}; |
-| .${color}-f | fill: ${value}; |
-| .${color}-s | stroke: ${value}; |
-| .${color}--hover | color: ${contrast}; background-color: ${value}; |
+| .${color}-br | border-color: ${value}; |
+| .${color}-brt | border-top-color: ${value}; |
+| .${color}-brr | border-right-color: ${value}; |
+| .${color}-brb | border-bottom-color: ${value}; |
+| .${color}-brl | border-left-color: ${value}; |
+| .${color}-ol | outline-color: ${value}; |
+| .${color}-olt | outline-top-color: ${value}; |
+| .${color}-olr | outline-right-color: ${value}; |
+| .${color}-olb | outline-bottom-color: ${value}; |
+| .${color}-oll | outline-left-color: ${value}; |
+| .${color}-ol | outline-color: ${value}; |
+| .${color}-fi | fill: ${value}; |
+| .${color}-st | stroke: ${value}; |
+| .${color}--hover | background-color: ${value}; color: ${contrast}; |
 | .${color}-contrast--hover | color: ${contrast}; |
 | .${color}-text--hover | color: ${value}; |
 | .${color}-bg--hover | background-color: ${value}; |
-| .${color}-b--hover | border-color: ${value}; |
-| .${color}-bt--hover | border-top-color: ${value}; |
-| .${color}-br--hover | border-right-color: ${value}; |
-| .${color}-bb--hover | border-bottom-color: ${value}; |
-| .${color}-bl--hover | border-left-color: ${value}; |
-| .${color}-o--hover | outline-color: ${value}; |
-| .${color}-f--hover | fill: ${value}; |
-| .${color}-s--hover | stroke: ${value}; |
-| .${color}--focus | color: ${contrast}; background-color: ${value}; |
+| .${color}-br--hover | border-color: ${value}; |
+| .${color}-brt--hover | border-top-color: ${value}; |
+| .${color}-brr--hover | border-right-color: ${value}; |
+| .${color}-brb--hover | border-bottom-color: ${value}; |
+| .${color}-brl--hover | border-left-color: ${value}; |
+| .${color}-ol--hover | outline-color: ${value}; |
+| .${color}-olt--hover | outline-top-color: ${value}; |
+| .${color}-olr--hover | outline-right-color: ${value}; |
+| .${color}-olb--hover | outline-bottom-color: ${value}; |
+| .${color}-oll--hover | outline-left-color: ${value}; |
+| .${color}-fi--hover | fill: ${value}; |
+| .${color}-st--hover | stroke: ${value}; |
+| .${color}--focus | background-color: ${value}; color: ${contrast}; |
 | .${color}-contrast--focus | color: ${contrast}; |
 | .${color}-text--focus | color: ${value}; |
 | .${color}-bg--focus | background-color: ${value}; |
-| .${color}-b--focus | border-color: ${value}; |
-| .${color}-bt--focus | border-top-color: ${value}; |
-| .${color}-br--focus | border-right-color: ${value}; |
-| .${color}-bb--focus | border-bottom-color: ${value}; |
-| .${color}-bl--focus | border-left-color: ${value}; |
-| .${color}-o--focus | outline-color: ${value}; |
-| .${color}-f--focus | fill: ${value}; |
-| .${color}-s--focus | stroke: ${value}; |
+| .${color}-br--focus | border-color: ${value}; |
+| .${color}-brt--focus | border-top-color: ${value}; |
+| .${color}-brr--focus | border-right-color: ${value}; |
+| .${color}-brb--focus | border-bottom-color: ${value}; |
+| .${color}-brl--focus | border-left-color: ${value}; |
+| .${color}-ol--focus | outline-color: ${value}; |
+| .${color}-olt--focus | outline-top-color: ${value}; |
+| .${color}-olr--focus | outline-right-color: ${value}; |
+| .${color}-olb--focus | outline-bottom-color: ${value}; |
+| .${color}-oll--focus | outline-left-color: ${value}; |
+| .${color}-fi--focus | fill: ${value}; |
+| .${color}-st--focus | stroke: ${value}; |
 
 ### Available Colors
 
-| Style | Css (Dark Threme)
+| Style | Css (Dark Theme)
 |-------|---------------------------------
-| .primary | color: #d7e3ea; background-color: #abb4bd; |
-| .primary-s1 | color: #abb4bd; background-color: #162029; |
-| .primary-s1 | color: #abb4bd; background-color: #162029; |
-| .primary-s2 | color: #d3dce0; background-color: #3C4549; |
-| .primary-s3 | color: #d3dce0; background-color: #58656d; |
-| .secondary | color: #4b585f; background-color: #fafafa; |
-| .secondary-s1 | color: #4b585f; background-color: #ecf0f3; |
-| .accent | color: #424242; background-color: #ffae27; |
-| .white | color: #000; background-color: #fff; |
-| .black | color: #fff; background-color: #000; |
-| .error | color: #fff; background-color: #D02A2B; |
-| .success | color: #fff; background-color: #29D185; |
-| .warning | color: #424242; background-color: #D1C829; |
-| .divider | background-color: #58656d; |
-
+| primary | background-color: #162029 | color: #abb4bd |
+| primary-s1 | background-color: #2C3336 | color: #d7e3ea |
+| primary-s2 | background-color: #3C4549 | color: #d3dce0 |
+| primary-s3 | background-color: #58656d | color: #d3dce0 |
+| secondary | background-color: #fafafa | color: #4b585f |
+| secondary-s1 | background-color: #ecf0f3 | color: #4b585f |
+| secondary-s2 | background-color: #58656d | color: #ecf0f3 |
+| accent | background-color: #ffae27 | color: #424242 |
+| white | background-color: #fff | color: #000 |
+| black | background-color: #000 | color: #fff |
+| error | background-color: #D02A2B | color: #fff |
+| success | background-color: #29D185 | color: #fff |
+| warning | background-color: #ffae27 | color: #424242 |
+| divider | background-color: #263138 |
+}
 ### Transparent Colors
 
 | Style | Css
@@ -241,69 +275,69 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 
 | Style | Css
 |-------|---------------------------------
-| .bo0 | border-width: 0rem; |
-| .bot0 | border-top-width: 0rem; |
-| .bor0 | border-right-width: 0rem; |
-| .bob0 | border-bottom-width: 0rem; |
-| .bol0 | border-left-width: 0rem; |
-| .bov0 | border-top-width: 0rem; border-bottom-width: 0rem; |
-| .boh0 | border-left-width: 0rem; border-right-width: 0rem; |
-| .bo1 | border-width: 0.08333rem; |
-| .bot1 | border-top-width: 0.08333rem; |
-| .bor1 | border-right-width: 0.08333rem; |
-| .bob1 | border-bottom-width: 0.08333rem; |
-| .bol1 | border-left-width: 0.08333rem; |
-| .bov1 | border-top-width: 0.08333rem; border-bottom-width: 0.08333rem; |
-| .boh1 | border-left-width: 0.08333rem; border-right-width: 0.08333rem; |
-| .bo2 | border-width: 0.16667rem; |
-| .bot2 | border-top-width: 0.16667rem; |
-| .bor2 | border-right-width: 0.16667rem; |
-| .bob2 | border-bottom-width: 0.16667rem; |
-| .bol2 | border-left-width: 0.16667rem; |
-| .bov2 | border-top-width: 0.16667rem; border-bottom-width: 0.16667rem; |
-| .boh2 | border-left-width: 0.16667rem; border-right-width: 0.16667rem; |
-| .bo3 | border-width: 0.25rem; |
-| .bot3 | border-top-width: 0.25rem; |
-| .bor3 | border-right-width: 0.25rem; |
-| .bob3 | border-bottom-width: 0.25rem; |
-| .bol3 | border-left-width: 0.25rem; |
-| .bov3 | border-top-width: 0.25rem; border-bottom-width: 0.25rem; |
-| .boh3 | border-left-width: 0.25rem; border-right-width: 0.25rem; |
-| .bo4 | border-width: 0.33333rem; |
-| .bot4 | border-top-width: 0.33333rem; |
-| .bor4 | border-right-width: 0.33333rem; |
-| .bob4 | border-bottom-width: 0.33333rem; |
-| .bol4 | border-left-width: 0.33333rem; |
-| .bov4 | border-top-width: 0.33333rem; border-bottom-width: 0.33333rem; |
-| .boh4 | border-left-width: 0.33333rem; border-right-width: 0.33333rem; |
-| .bo5 | border-width: 0.41667rem; |
-| .bot5 | border-top-width: 0.41667rem; |
-| .bor5 | border-right-width: 0.41667rem; |
-| .bob5 | border-bottom-width: 0.41667rem; |
-| .bol5 | border-left-width: 0.41667rem; |
-| .bov5 | border-top-width: 0.41667rem; border-bottom-width: 0.41667rem; |
-| .boh5 | border-left-width: 0.41667rem; border-right-width: 0.41667rem; |
-| .bo6 | border-width: 0.5rem; |
-| .bot6 | border-top-width: 0.5rem; |
-| .bor6 | border-right-width: 0.5rem; |
-| .bob6 | border-bottom-width: 0.5rem; |
-| .bol6 | border-left-width: 0.5rem; |
-| .bov6 | border-top-width: 0.5rem; border-bottom-width: 0.5rem; |
-| .boh6 | border-left-width: 0.5rem; border-right-width: 0.5rem; |
-| .bo7 | border-width: 0.58333rem; |
-| .bot7 | border-top-width: 0.58333rem; |
-| .bor7 | border-right-width: 0.58333rem; |
-| .bob7 | border-bottom-width: 0.58333rem; |
-| .bol7 | border-left-width: 0.58333rem; |
-| .bov7 | border-top-width: 0.58333rem; border-bottom-width: 0.58333rem; |
-| .boh7 | border-left-width: 0.58333rem; border-right-width: 0.58333rem; |
-| .bo8 | border-width: 0.66667rem; |
-| .bot8 | border-top-width: 0.66667rem; |
-| .bor8 | border-right-width: 0.66667rem; |
-| .bob8 | border-bottom-width: 0.66667rem; |
-| .bol8 | border-left-width: 0.66667rem; |
-| .bov8 | border-top-width: 0.66667rem; border-bottom-width: 0.66667rem; |
-| .boh8 | border-left-width: 0.66667rem; border-right-width: 0.66667rem; |
+| .br0 | border-width: 0rem; |
+| .brt0 | border-top-width: 0rem; |
+| .brr0 | border-right-width: 0rem; |
+| .brb0 | border-bottom-width: 0rem; |
+| .brl0 | border-left-width: 0rem; |
+| .brv0 | border-top-width: 0rem; border-bottom-width: 0rem; |
+| .brh0 | border-left-width: 0rem; border-right-width: 0rem; |
+| .br1 | border-width: 0.08333rem; |
+| .brt1 | border-top-width: 0.08333rem; |
+| .brr1 | border-right-width: 0.08333rem; |
+| .brb1 | border-bottom-width: 0.08333rem; |
+| .brl1 | border-left-width: 0.08333rem; |
+| .brv1 | border-top-width: 0.08333rem; border-bottom-width: 0.08333rem; |
+| .brh1 | border-left-width: 0.08333rem; border-right-width: 0.08333rem; |
+| .br2 | border-width: 0.16667rem; |
+| .brt2 | border-top-width: 0.16667rem; |
+| .brr2 | border-right-width: 0.16667rem; |
+| .brb2 | border-bottom-width: 0.16667rem; |
+| .brl2 | border-left-width: 0.16667rem; |
+| .brv2 | border-top-width: 0.16667rem; border-bottom-width: 0.16667rem; |
+| .brh2 | border-left-width: 0.16667rem; border-right-width: 0.16667rem; |
+| .br3 | border-width: 0.25rem; |
+| .brt3 | border-top-width: 0.25rem; |
+| .brr3 | border-right-width: 0.25rem; |
+| .brb3 | border-bottom-width: 0.25rem; |
+| .brl3 | border-left-width: 0.25rem; |
+| .brv3 | border-top-width: 0.25rem; border-bottom-width: 0.25rem; |
+| .brh3 | border-left-width: 0.25rem; border-right-width: 0.25rem; |
+| .br4 | border-width: 0.33333rem; |
+| .brt4 | border-top-width: 0.33333rem; |
+| .brr4 | border-right-width: 0.33333rem; |
+| .brb4 | border-bottom-width: 0.33333rem; |
+| .brl4 | border-left-width: 0.33333rem; |
+| .brv4 | border-top-width: 0.33333rem; border-bottom-width: 0.33333rem; |
+| .brh4 | border-left-width: 0.33333rem; border-right-width: 0.33333rem; |
+| .br5 | border-width: 0.41667rem; |
+| .brt5 | border-top-width: 0.41667rem; |
+| .brr5 | border-right-width: 0.41667rem; |
+| .brb5 | border-bottom-width: 0.41667rem; |
+| .brl5 | border-left-width: 0.41667rem; |
+| .brv5 | border-top-width: 0.41667rem; border-bottom-width: 0.41667rem; |
+| .brh5 | border-left-width: 0.41667rem; border-right-width: 0.41667rem; |
+| .br6 | border-width: 0.5rem; |
+| .brt6 | border-top-width: 0.5rem; |
+| .brr6 | border-right-width: 0.5rem; |
+| .brb6 | border-bottom-width: 0.5rem; |
+| .brl6 | border-left-width: 0.5rem; |
+| .brv6 | border-top-width: 0.5rem; border-bottom-width: 0.5rem; |
+| .brh6 | border-left-width: 0.5rem; border-right-width: 0.5rem; |
+| .br7 | border-width: 0.58333rem; |
+| .brt7 | border-top-width: 0.58333rem; |
+| .brr7 | border-right-width: 0.58333rem; |
+| .brb7 | border-bottom-width: 0.58333rem; |
+| .brl7 | border-left-width: 0.58333rem; |
+| .brv7 | border-top-width: 0.58333rem; border-bottom-width: 0.58333rem; |
+| .brh7 | border-left-width: 0.58333rem; border-right-width: 0.58333rem; |
+| .br8 | border-width: 0.66667rem; |
+| .brt8 | border-top-width: 0.66667rem; |
+| .brr8 | border-right-width: 0.66667rem; |
+| .brb8 | border-bottom-width: 0.66667rem; |
+| .brl8 | border-left-width: 0.66667rem; |
+| .brv8 | border-top-width: 0.66667rem; border-bottom-width: 0.66667rem; |
+| .brh8 | border-left-width: 0.66667rem; border-right-width: 0.66667rem; |
 
 ### Outline
 
@@ -456,13 +490,27 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 
 | Style | Css
 |-------|---------------------------------
-| .shadow-0 | box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.3); |
-| .shadow-1 | box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); |
-| .shadow-2 | box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); |
-| .shadow-3 | box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3); |
-| .shadow-4 | box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3); |
-| .shadow-5 | box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.3); |
-| .shadow-6 | box-shadow: 6px 6px 30px rgba(0, 0, 0, 0.3); |
+| .s0 | box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.3); |
+| .s1 | box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); |
+| .s2 | box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); |
+| .s3 | box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3); |
+| .s4 | box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3); |
+| .s5 | box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.3); |
+| .s6 | box-shadow: 6px 6px 30px rgba(0, 0, 0, 0.3); |
+| .s0--hover | box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.3); |
+| .s1--hover | box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); |
+| .s2--hover | box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); |
+| .s3--hover | box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3); |
+| .s4--hover | box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3); |
+| .s5--hover | box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.3); |
+| .s6--hover | box-shadow: 6px 6px 30px rgba(0, 0, 0, 0.3); |
+| .s0--focus | box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.3); |
+| .s1--focus | box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); |
+| .s2--focus | box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); |
+| .s3--focus | box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3); |
+| .s4--focus | box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3); |
+| .s5--focus | box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.3); |
+| .s6--focus | box-shadow: 6px 6px 30px rgba(0, 0, 0, 0.3); |
 
 ### Text
 
@@ -470,7 +518,7 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 |-------|---------------------------------
 | .i | font-style: italic; |
 | .b | font-weight: bold; |
-| .line-through | text-decoration: line-through; |
+| .lt | text-decoration: line-through; |
 | .tl | text-align: left; |
 | .tc | text-align: center; |
 | .tr | text-align: right; |
@@ -1297,107 +1345,107 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 
 | Style | Css
 |-------|---------------------------------
-| .s0 | stroke-width: 0rem; |
-| .s1 | stroke-width: 0.25rem; |
-| .s2 | stroke-width: 0.5rem; |
-| .s3 | stroke-width: 0.75rem; |
-| .s4 | stroke-width: 1rem; |
-| .s5 | stroke-width: 1.25rem; |
-| .s6 | stroke-width: 1.5rem; |
-| .s7 | stroke-width: 1.75rem; |
-| .s8 | stroke-width: 2rem; |
-| .s9 | stroke-width: 2.25rem; |
-| .s10 | stroke-width: 2.5rem; |
-| .s11 | stroke-width: 2.75rem; |
-| .s12 | stroke-width: 3rem; |
-| .s13 | stroke-width: 3.25rem; |
-| .s14 | stroke-width: 3.5rem; |
-| .s15 | stroke-width: 3.75rem; |
-| .s16 | stroke-width: 4rem; |
-| .s17 | stroke-width: 4.25rem; |
-| .s18 | stroke-width: 4.5rem; |
-| .s19 | stroke-width: 4.75rem; |
-| .s20 | stroke-width: 5rem; |
-| .s21 | stroke-width: 5.25rem; |
-| .s22 | stroke-width: 5.5rem; |
-| .s23 | stroke-width: 5.75rem; |
-| .s24 | stroke-width: 6rem; |
-| .s25 | stroke-width: 6.25rem; |
-| .s26 | stroke-width: 6.5rem; |
-| .s27 | stroke-width: 6.75rem; |
-| .s28 | stroke-width: 7rem; |
-| .s29 | stroke-width: 7.25rem; |
-| .s30 | stroke-width: 7.5rem; |
-| .s31 | stroke-width: 7.75rem; |
-| .s32 | stroke-width: 8rem; |
-| .s33 | stroke-width: 8.25rem; |
-| .s34 | stroke-width: 8.5rem; |
-| .s35 | stroke-width: 8.75rem; |
-| .s36 | stroke-width: 9rem; |
-| .s37 | stroke-width: 9.25rem; |
-| .s38 | stroke-width: 9.5rem; |
-| .s39 | stroke-width: 9.75rem; |
-| .s40 | stroke-width: 10rem; |
-| .s41 | stroke-width: 10.25rem; |
-| .s42 | stroke-width: 10.5rem; |
-| .s43 | stroke-width: 10.75rem; |
-| .s44 | stroke-width: 11rem; |
-| .s45 | stroke-width: 11.25rem; |
-| .s46 | stroke-width: 11.5rem; |
-| .s47 | stroke-width: 11.75rem; |
-| .s48 | stroke-width: 12rem; |
-| .s49 | stroke-width: 12.25rem; |
-| .s50 | stroke-width: 12.5rem; |
-| .s51 | stroke-width: 12.75rem; |
-| .s52 | stroke-width: 13rem; |
-| .s53 | stroke-width: 13.25rem; |
-| .s54 | stroke-width: 13.5rem; |
-| .s55 | stroke-width: 13.75rem; |
-| .s56 | stroke-width: 14rem; |
-| .s57 | stroke-width: 14.25rem; |
-| .s58 | stroke-width: 14.5rem; |
-| .s59 | stroke-width: 14.75rem; |
-| .s60 | stroke-width: 15rem; |
-| .s61 | stroke-width: 15.25rem; |
-| .s62 | stroke-width: 15.5rem; |
-| .s63 | stroke-width: 15.75rem; |
-| .s64 | stroke-width: 16rem; |
-| .s65 | stroke-width: 16.25rem; |
-| .s66 | stroke-width: 16.5rem; |
-| .s67 | stroke-width: 16.75rem; |
-| .s68 | stroke-width: 17rem; |
-| .s69 | stroke-width: 17.25rem; |
-| .s70 | stroke-width: 17.5rem; |
-| .s71 | stroke-width: 17.75rem; |
-| .s72 | stroke-width: 18rem; |
-| .s73 | stroke-width: 18.25rem; |
-| .s74 | stroke-width: 18.5rem; |
-| .s75 | stroke-width: 18.75rem; |
-| .s76 | stroke-width: 19rem; |
-| .s77 | stroke-width: 19.25rem; |
-| .s78 | stroke-width: 19.5rem; |
-| .s79 | stroke-width: 19.75rem; |
-| .s80 | stroke-width: 20rem; |
-| .s81 | stroke-width: 20.25rem; |
-| .s82 | stroke-width: 20.5rem; |
-| .s83 | stroke-width: 20.75rem; |
-| .s84 | stroke-width: 21rem; |
-| .s85 | stroke-width: 21.25rem; |
-| .s86 | stroke-width: 21.5rem; |
-| .s87 | stroke-width: 21.75rem; |
-| .s88 | stroke-width: 22rem; |
-| .s89 | stroke-width: 22.25rem; |
-| .s90 | stroke-width: 22.5rem; |
-| .s91 | stroke-width: 22.75rem; |
-| .s92 | stroke-width: 23rem; |
-| .s93 | stroke-width: 23.25rem; |
-| .s94 | stroke-width: 23.5rem; |
-| .s95 | stroke-width: 23.75rem; |
-| .s96 | stroke-width: 24rem; |
-| .s97 | stroke-width: 24.25rem; |
-| .s98 | stroke-width: 24.5rem; |
-| .s99 | stroke-width: 24.75rem; |
-| .s100 | stroke-width: 100%; |
+| .st0 | stroke-width: 0rem; |
+| .st1 | stroke-width: 0.25rem; |
+| .st2 | stroke-width: 0.5rem; |
+| .st3 | stroke-width: 0.75rem; |
+| .st4 | stroke-width: 1rem; |
+| .st5 | stroke-width: 1.25rem; |
+| .st6 | stroke-width: 1.5rem; |
+| .st7 | stroke-width: 1.75rem; |
+| .st8 | stroke-width: 2rem; |
+| .st9 | stroke-width: 2.25rem; |
+| .st10 | stroke-width: 2.5rem; |
+| .st11 | stroke-width: 2.75rem; |
+| .st12 | stroke-width: 3rem; |
+| .st13 | stroke-width: 3.25rem; |
+| .st14 | stroke-width: 3.5rem; |
+| .st15 | stroke-width: 3.75rem; |
+| .st16 | stroke-width: 4rem; |
+| .st17 | stroke-width: 4.25rem; |
+| .st18 | stroke-width: 4.5rem; |
+| .st19 | stroke-width: 4.75rem; |
+| .st20 | stroke-width: 5rem; |
+| .st21 | stroke-width: 5.25rem; |
+| .st22 | stroke-width: 5.5rem; |
+| .st23 | stroke-width: 5.75rem; |
+| .st24 | stroke-width: 6rem; |
+| .st25 | stroke-width: 6.25rem; |
+| .st26 | stroke-width: 6.5rem; |
+| .st27 | stroke-width: 6.75rem; |
+| .st28 | stroke-width: 7rem; |
+| .st29 | stroke-width: 7.25rem; |
+| .st30 | stroke-width: 7.5rem; |
+| .st31 | stroke-width: 7.75rem; |
+| .st32 | stroke-width: 8rem; |
+| .st33 | stroke-width: 8.25rem; |
+| .st34 | stroke-width: 8.5rem; |
+| .st35 | stroke-width: 8.75rem; |
+| .st36 | stroke-width: 9rem; |
+| .st37 | stroke-width: 9.25rem; |
+| .st38 | stroke-width: 9.5rem; |
+| .st39 | stroke-width: 9.75rem; |
+| .st40 | stroke-width: 10rem; |
+| .st41 | stroke-width: 10.25rem; |
+| .st42 | stroke-width: 10.5rem; |
+| .st43 | stroke-width: 10.75rem; |
+| .st44 | stroke-width: 11rem; |
+| .st45 | stroke-width: 11.25rem; |
+| .st46 | stroke-width: 11.5rem; |
+| .st47 | stroke-width: 11.75rem; |
+| .st48 | stroke-width: 12rem; |
+| .st49 | stroke-width: 12.25rem; |
+| .st50 | stroke-width: 12.5rem; |
+| .st51 | stroke-width: 12.75rem; |
+| .st52 | stroke-width: 13rem; |
+| .st53 | stroke-width: 13.25rem; |
+| .st54 | stroke-width: 13.5rem; |
+| .st55 | stroke-width: 13.75rem; |
+| .st56 | stroke-width: 14rem; |
+| .st57 | stroke-width: 14.25rem; |
+| .st58 | stroke-width: 14.5rem; |
+| .st59 | stroke-width: 14.75rem; |
+| .st60 | stroke-width: 15rem; |
+| .st61 | stroke-width: 15.25rem; |
+| .st62 | stroke-width: 15.5rem; |
+| .st63 | stroke-width: 15.75rem; |
+| .st64 | stroke-width: 16rem; |
+| .st65 | stroke-width: 16.25rem; |
+| .st66 | stroke-width: 16.5rem; |
+| .st67 | stroke-width: 16.75rem; |
+| .st68 | stroke-width: 17rem; |
+| .st69 | stroke-width: 17.25rem; |
+| .st70 | stroke-width: 17.5rem; |
+| .st71 | stroke-width: 17.75rem; |
+| .st72 | stroke-width: 18rem; |
+| .st73 | stroke-width: 18.25rem; |
+| .st74 | stroke-width: 18.5rem; |
+| .st75 | stroke-width: 18.75rem; |
+| .st76 | stroke-width: 19rem; |
+| .st77 | stroke-width: 19.25rem; |
+| .st78 | stroke-width: 19.5rem; |
+| .st79 | stroke-width: 19.75rem; |
+| .st80 | stroke-width: 20rem; |
+| .st81 | stroke-width: 20.25rem; |
+| .st82 | stroke-width: 20.5rem; |
+| .st83 | stroke-width: 20.75rem; |
+| .st84 | stroke-width: 21rem; |
+| .st85 | stroke-width: 21.25rem; |
+| .st86 | stroke-width: 21.5rem; |
+| .st87 | stroke-width: 21.75rem; |
+| .st88 | stroke-width: 22rem; |
+| .st89 | stroke-width: 22.25rem; |
+| .st90 | stroke-width: 22.5rem; |
+| .st91 | stroke-width: 22.75rem; |
+| .st92 | stroke-width: 23rem; |
+| .st93 | stroke-width: 23.25rem; |
+| .st94 | stroke-width: 23.5rem; |
+| .st95 | stroke-width: 23.75rem; |
+| .st96 | stroke-width: 24rem; |
+| .st97 | stroke-width: 24.25rem; |
+| .st98 | stroke-width: 24.5rem; |
+| .st99 | stroke-width: 24.75rem; |
+| .st100 | stroke-width: 100%; |
 
 ### Line Height
 
@@ -2151,7 +2199,7 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 | .fill | left: 0; top: 0; width: 100%; height: 100%; |
 | .absolute | position: absolute; |
 | .relative | position: relative; |
-| .ib | display: inline-block; |
+| .inline-b | display: inline-block; |
 | .pointer | cursor: pointer; |
 
 ### Overflow
@@ -2159,7 +2207,7 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 | Style | Css
 |-------|---------------------------------
 | .no-overflow | overflow: hidden; |
-| .scroll | overflow: auto; |
+| .scroll | overflow: hidden; overflow-x: auto; overflow-y: auto; |
 | .scroll-x | overflow: hidden; overflow-x: auto; |
 | .scroll-y | overflow: hidden; overflow-y: auto; |
 
@@ -2247,3 +2295,47 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 | .ease-out--pr | transition-property: padding-right; |
 | .ease-out--pb | transition-property: padding-bottom; |
 | .ease-out--pl | transition-property: padding-left; |
+
+## Contributing
+Contributions are very welcome! Just send a pull request. Feel free to contact me or checkout my [GitHub](https://github.com/rintoj) page.
+
+## Author
+
+**Rinto Jose** (rintoj)
+
+### Hope this module is helpful to you. Checkout my other [projects](https://github.com/rintoj) and [articles](https://medium.com/@rintoj). Enjoy coding!
+
+Follow me:
+  [GitHub](https://github.com/rintoj)
+| [Facebook](https://www.facebook.com/rinto.jose)
+| [Twitter](https://twitter.com/rintoj)
+| [Google+](https://plus.google.com/+RintoJoseMankudy)
+| [Youtube](https://youtube.com/+RintoJoseMankudy)
+
+## Versions
+[Check CHANGELOG](https://github.com/rintoj/functional-css/blob/master/CHANGELOG.md)
+
+## License
+```
+The MIT License (MIT)
+
+Copyright (c) 2017 Rinto Jose (rintoj)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```

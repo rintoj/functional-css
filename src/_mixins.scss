@@ -31,28 +31,28 @@ $colors: ();
     .#{$name}-bg#{$type} {
       background-color: $color;
     }
-    .#{$name}-b#{$type} {
+    .#{$name}-br#{$type} {
       border-color: $color;
     }
-    .#{$name}-bt#{$type} {
+    .#{$name}-brt#{$type} {
       border-top-color: $color;
     }
-    .#{$name}-br#{$type} {
+    .#{$name}-brr#{$type} {
       border-right-color: $color;
     }
-    .#{$name}-bb#{$type} {
+    .#{$name}-brb#{$type} {
       border-bottom-color: $color;
     }
-    .#{$name}-bl#{$type} {
+    .#{$name}-brl#{$type} {
       border-left-color: $color;
     }
-    .#{$name}-o#{$type} {
+    .#{$name}-ol#{$type} {
       outline-color: $color;
     }
-    .#{$name}-f#{$type} {
+    .#{$name}-fi#{$type} {
       fill: $color;
     }
-    .#{$name}-s#{$type} {
+    .#{$name}-st#{$type} {
       stroke: $color;
     }
   }
@@ -60,10 +60,13 @@ $colors: ();
 
 @mixin shadow($from, $upto) {
   @for $i from $from through $upto {
-    .shadow-#{$i} {
+    .s#{$i} {
       @include box-shadow($i)
     }
-    .shadow-#{$i}--hover:hover {
+    .s#{$i}--hover:hover {
+      @include box-shadow($i)
+    }
+    .s#{$i}--focus:focus {
       @include box-shadow($i)
     }
   }
@@ -288,28 +291,41 @@ $colors: ();
 @mixin width($prefix, $property, $from, $upto) {
   @for $i from $from through $upto {
     $value: ($i / 75 * 100) / 16;
+    $style: solid;
+    @if $value==0 {
+      $style: none;
+    }
     .#{$prefix}#{$i} {
       #{$property}-width: $value#{'rem'};
+      #{$property}-style: $style;
     }
     .#{$prefix}t#{$i} {
       #{$property}-top-width: $value#{'rem'};
+      #{$property}-top-style: $style;
     }
     .#{$prefix}r#{$i} {
       #{$property}-right-width: $value#{'rem'};
+      #{$property}-right-style: $style;
     }
     .#{$prefix}b#{$i} {
       #{$property}-bottom-width: $value#{'rem'};
+      #{$property}-bottom-style: $style;
     }
     .#{$prefix}l#{$i} {
       #{$property}-left-width: $value#{'rem'};
+      #{$property}-left-style: $style;
     }
     .#{$prefix}v#{$i} {
       #{$property}-top-width: $value#{'rem'};
+      #{$property}-top-style: $style;
       #{$property}-bottom-width: $value#{'rem'};
+      #{$property}-bottom-style: $style;
     }
     .#{$prefix}h#{$i} {
       #{$property}-left-width: $value#{'rem'};
+      #{$property}-left-style: $style;
       #{$property}-right-width: $value#{'rem'};
+      #{$property}-right-style: $style;
     }
   }
 }
@@ -336,7 +352,7 @@ $colors: ();
   .b {
     font-weight: bold;
   }
-  .line-through {
+  .lt {
     text-decoration: line-through;
   }
   .tl {
@@ -392,7 +408,9 @@ $colors: ();
     overflow: hidden;
   }
   .scroll {
-    overflow: auto;
+    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: auto;
   }
   .scroll-x {
     overflow: hidden;
@@ -402,7 +420,7 @@ $colors: ();
     overflow: hidden;
     overflow-y: auto;
   }
-  .ib {
+  .inline-b {
     display: inline-block;
   }
   .vat {

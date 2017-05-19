@@ -1,18 +1,24 @@
 /* eslint-disable no-console */
 const path = require('path');
+const chalk = require('chalk');
 const webpack = require('webpack');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
-  filename: 'index.min.css',
+  filename: '[name].min.css',
 });
 
 module.exports = {
   bail: true,
-  entry: [
-    path.resolve('./index.js')
-  ],
+  entry: {
+    'dark-theme': path.resolve('./scripts/dark-theme.js'),
+    'light-theme': path.resolve('./scripts/dark-theme.js'),
+    core: path.resolve('./scripts/core.js'),
+    index: path.resolve('./scripts/index.js'),
+    theme: path.resolve('./scripts/theme.js'),
+  },
   output: {
     path: path.resolve('./dist'),
     filename: '[name].js',
@@ -29,7 +35,22 @@ module.exports = {
         sourceMap: true
       }
     }, {
-      test: /\.scss$/,
+      exclude: [
+        /\.html$/,
+        /\.(js|jsx)(\?.*)?$/,
+        /\.(ts|tsx)(\?.*)?$/,
+        /\.css$/,
+        /\.scss$/,
+        /\.json$/,
+        /\.svg$/,
+      ],
+      loader: 'url-loader',
+      query: {
+        limit: 10000,
+        name: 'static/media/[name].[hash:8].[ext]',
+      },
+    }, {
+      test: /\.s?css$/,
       loader: extractSass.extract({
         use: [{
           loader: 'css-loader',
@@ -50,6 +71,12 @@ module.exports = {
 
     /** production only plugins */
     extractSass,
+    new ProgressBarPlugin({
+      format: `  :bar ${chalk.green.bold(':percent')} (:etas remaining) ${chalk.gray(':msg...')}`,
+      incomplete: chalk.gray('░'),
+      complete: chalk.yellow('█'),
+      head: '»',
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         screw_ie8: true,
@@ -64,6 +91,7 @@ module.exports = {
       },
     }),
     new OptimizeCssAssetsPlugin({
+      canPrint: false,
       assetNameRegExp: /\.min\.css$/,
       cssProcessorOptions: {
         discardComments: {
