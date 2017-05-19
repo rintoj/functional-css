@@ -193,7 +193,7 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 | success | background-color: #29D185 | color: #fff |
 | warning | background-color: #ffae27 | color: #424242 |
 | divider | background-color: #263138 |
-}
+
 ### Transparent Colors
 
 | Style | Css
@@ -261,6 +261,22 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 | .br--solid | border-style: solid; |
 | .br--dotted | border-style: dotted; |
 | .br--dashed | border-style: dashed; |
+| .brt--none | border-top-style: none; |
+| .brt--solid | border-top-style: solid; |
+| .brt--dotted | border-top-style: dotted; |
+| .brt--dashed | border-top-style: dashed; |
+| .brr--none | border-right-style: none; |
+| .brr--solid | border-right-style: solid; |
+| .brr--dotted | border-right-style: dotted; |
+| .brr--dashed | border-right-style: dashed; |
+| .brb--none | border-bottom-style: none; |
+| .brb--solid | border-bottom-style: solid; |
+| .brb--dotted | border-bottom-style: dotted; |
+| .brb--dashed | border-bottom-style: dashed; |
+| .brl--none | border-left-style: none; |
+| .brl--solid | border-left-style: solid; |
+| .brl--dotted | border-left-style: dotted; |
+| .brl--dashed | border-left-style: dashed; |
 
 ### Outline Style
 
@@ -270,6 +286,22 @@ You can define colors themes on your own as below. Colors are defined in pairs. 
 | .ol--solid | outline-style: solid; |
 | .ol--dotted | outline-style: dotted; |
 | .ol--dashed | outline-style: dashed; |
+| .olt--none | outline-top-style: none; |
+| .olt--solid | outline-top-style: solid; |
+| .olt--dotted | outline-top-style: dotted; |
+| .olt--dashed | outline-top-style: dashed; |
+| .olr--none | outline-right-style: none; |
+| .olr--solid | outline-right-style: solid; |
+| .olr--dotted | outline-right-style: dotted; |
+| .olr--dashed | outline-right-style: dashed; |
+| .olb--none | outline-bottom-style: none; |
+| .olb--solid | outline-bottom-style: solid; |
+| .olb--dotted | outline-bottom-style: dotted; |
+| .olb--dashed | outline-bottom-style: dashed; |
+| .oll--none | outline-left-style: none; |
+| .oll--solid | outline-left-style: solid; |
+| .oll--dotted | outline-left-style: dotted; |
+| .oll--dashed | outline-left-style: dashed; |
 
 ### Border Width
 
