@@ -1,6 +1,6 @@
 {
   "name": "functional-css",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Functional css library",
   "main": "dist/index.min.css",
   "scripts": {
