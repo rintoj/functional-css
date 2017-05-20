@@ -1014,8 +1014,8 @@ exports.readFiles = readFiles;
 var classNameParser = __webpack_require__(10);
 var fileParser = __webpack_require__(31);
 var fetchFileNames = fileParser.fetchFileNames, readFiles = fileParser.readFiles;
-var parseClassName = classNameParser.parseClassName;
-var extensions = ['.ts', '.tsx'];
+var parseClassNames = classNameParser.parseClassNames;
+var extensions = ['.js', '.jsx', '.html', '.ts', '.tsx'];
 function resolveDirectory() {
     return process.argv[2] || process.cwd();
 }
@@ -1023,7 +1023,7 @@ Promise.resolve()
     .then(function () { return resolveDirectory(); })
     .then(function (directory) { return fetchFileNames(directory, extensions); })
     .then(function (files) { return readFiles(files); })
-    .then(function (files) { return files.map(function (file) { return parseClassName(file.content); }); });
+    .then(function (files) { return files.map(function (file) { return parseClassNames(file.content); }); });
 module.exports = { fileParser: fileParser, classNameParser: classNameParser };
 
 
