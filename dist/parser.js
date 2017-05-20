@@ -63,19 +63,19 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 27);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var fs = __webpack_require__(5)
-var polyfills = __webpack_require__(52)
-var legacy = __webpack_require__(51)
+var fs = __webpack_require__(7)
+var polyfills = __webpack_require__(80)
+var legacy = __webpack_require__(79)
 var queue = []
 
-var util = __webpack_require__(18)
+var util = __webpack_require__(28)
 
 function noop () {}
 
@@ -92,11 +92,11 @@ else if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || ''))
 if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || '')) {
   process.on('exit', function() {
     debug(queue)
-    __webpack_require__(10).equal(queue.length, 0)
+    __webpack_require__(13).equal(queue.length, 0)
   })
 }
 
-module.exports = patch(__webpack_require__(16))
+module.exports = patch(__webpack_require__(26))
 if (process.env.TEST_GRACEFUL_FS_GLOBAL_PATCH) {
   module.exports = patch(fs)
 }
@@ -379,8 +379,8 @@ exports.fromPromise = function (fn) {
 "use strict";
 
 const u = __webpack_require__(2).fromCallback
-const mkdirs = u(__webpack_require__(44))
-const mkdirsSync = __webpack_require__(43)
+const mkdirs = u(__webpack_require__(72))
+const mkdirsSync = __webpack_require__(71)
 
 module.exports = {
   mkdirs: mkdirs,
@@ -400,7 +400,7 @@ module.exports = {
 "use strict";
 
 const u = __webpack_require__(2).fromPromise
-const fs = __webpack_require__(13)
+const fs = __webpack_require__(23)
 
 function pathExists (path) {
   return fs.access(path).then(() => true).catch(() => false)
@@ -413,27 +413,12 @@ module.exports = {
 
 
 /***/ }),
-/* 5 */
+/* 5 */,
+/* 6 */,
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
-
-/***/ }),
-/* 6 */,
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const u = __webpack_require__(2).fromCallback
-const rimraf = __webpack_require__(48)
-
-module.exports = {
-  remove: u(rimraf),
-  removeSync: rimraf.sync
-}
-
 
 /***/ }),
 /* 8 */
@@ -443,7 +428,112 @@ module.exports = {
 
 
 const u = __webpack_require__(2).fromCallback
-const jsonFile = __webpack_require__(53)
+const rimraf = __webpack_require__(76)
+
+module.exports = {
+  remove: u(rimraf),
+  removeSync: rimraf.sync
+}
+
+
+/***/ }),
+/* 9 */,
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function uniq(classNames) {
+    return Object.keys((classNames || []).reduce(function (a, i) {
+        a[i] = true;
+        return a;
+    }, {}));
+}
+function extractExpression(source, begin, end, index) {
+    if (index === void 0) { index = 0; }
+    var expressions = [];
+    end = end || begin;
+    for (var si = index; si < source.length; si++) {
+        var stack = [];
+        var beginFound = false;
+        var expression = '';
+        var startIndex = void 0, endIndex = void 0, i = void 0;
+        for (i = si; i < source.length; i++) {
+            var startTag = source.substr(i, begin.length);
+            var endTag = source.substr(i, end.length);
+            if (beginFound && stack.length === 0) {
+                expressions.push({ expression: expression, startIndex: startIndex, endIndex: endIndex, source: source });
+                break;
+            }
+            if (startTag !== begin && !beginFound)
+                continue;
+            if (stack.slice(-1)[0] === begin && endTag === end) {
+                i += (endTag.length - 1);
+                stack.pop();
+                endIndex = i;
+            }
+            else if (startTag === begin) {
+                startIndex = i;
+                stack.push(startTag);
+                i += (startTag.length - 1);
+                beginFound = true;
+            }
+            else {
+                expression += source[i];
+            }
+        }
+        si = i;
+        if (stack.length !== 0) {
+            throw new Error("Invalid expression: '" + expression + "'. No matching expression found for '" + stack.slice(-1)[0] + "'");
+        }
+    }
+    return expressions;
+}
+exports.extractExpression = extractExpression;
+function extractClassStrings(code, beginFrom) {
+    if (beginFrom === void 0) { beginFrom = 0; }
+    var index = code.indexOf('className', beginFrom);
+    index = index < 0 ? code.indexOf('class', beginFrom) : index;
+    if (index < 0)
+        return [''];
+    var expressions = extractExpression(code, '"', '"', index)
+        .map(function (i) { return i.expression; });
+    if (expressions.length === 0) {
+        expressions = extractExpression(code, '\'', '\'', index)
+            .map(function (i) { return i.expression; });
+    }
+    if (expressions.length === 0) {
+        expressions = extractExpression(code, '`', '`', index)
+            .map(function (i) { return i.expression; });
+    }
+    if (expressions.length === 0) {
+        expressions = extractExpression(code, '{', '}', index)
+            .map(function (i) { return i.expression.replace(/^\s*['"`]|['"`]\s*/g); });
+    }
+    return expressions;
+}
+exports.extractClassStrings = extractClassStrings;
+function parseClassNames(code) {
+    return uniq((code || '').split('\n')
+        .map(function (line) { return extractClassStrings(line); })
+        .reduce(function (a, i) { return a.concat(i); }, [])
+        .reduce(function (a, i) { return a.concat(i.split(' ')); }, [])
+        .filter(function (className) { return className.trim() !== ''; }));
+}
+exports.parseClassNames = parseClassNames;
+
+
+/***/ }),
+/* 11 */,
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const u = __webpack_require__(2).fromCallback
+const jsonFile = __webpack_require__(81)
 
 module.exports = {
   // jsonfile exports
@@ -455,30 +545,36 @@ module.exports = {
 
 
 /***/ }),
-/* 9 */,
-/* 10 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = require("assert");
 
 /***/ }),
-/* 11 */
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  copySync: __webpack_require__(29)
+  copySync: __webpack_require__(57)
 }
 
 
 /***/ }),
-/* 12 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // imported from ncp (this is temporary, will rewrite)
 
 var fs = __webpack_require__(0)
 var path = __webpack_require__(1)
-var utimes = __webpack_require__(50)
+var utimes = __webpack_require__(78)
 
 function ncp (source, dest, options, callback) {
   if (!callback) {
@@ -711,7 +807,7 @@ module.exports = ncp
 
 
 /***/ }),
-/* 13 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // This is adapted from https://github.com/normalize/mz
@@ -778,7 +874,7 @@ exports.exists = function (filename, callback) {
 
 
 /***/ }),
-/* 14 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -810,7 +906,7 @@ module.exports = {
 
 
 /***/ }),
-/* 15 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /* eslint-disable node/no-deprecated-api */
@@ -827,13 +923,13 @@ module.exports = function (size) {
 
 
 /***/ }),
-/* 16 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var fs = __webpack_require__(5)
+var fs = __webpack_require__(7)
 
 module.exports = clone(fs)
 
@@ -855,47 +951,30 @@ function clone (obj) {
 
 
 /***/ }),
-/* 17 */
+/* 27 */
 /***/ (function(module, exports) {
 
 module.exports = require("stream");
 
 /***/ }),
-/* 18 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = require("util");
 
 /***/ }),
-/* 19 */,
-/* 20 */
+/* 29 */,
+/* 30 */,
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-function parseClassName(code) {
-    return (code || '').split('\n')
-        .map(function (line) { return /class(Name)?=["{'`]([^{}"'`]+)['}"`]/g.exec(line); })
-        .filter(function (result) { return result != undefined; })
-        .map(function (result) { return result[2]; })
-        .reduce(function (a, i) { return a.concat(i.split(' ')); }, []);
-}
-exports.parseClassName = parseClassName;
-
-
-/***/ }),
-/* 21 */,
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var fs = __webpack_require__(39);
-var klaw = __webpack_require__(55);
+var fs = __webpack_require__(67);
+var klaw = __webpack_require__(83);
 var path = __webpack_require__(1);
-var resolvable = __webpack_require__(56);
+var resolvable = __webpack_require__(84);
 var readFile = resolvable(fs.readFile);
 function walk(directory) {
     return new Promise(function (resolve, reject) {
@@ -926,17 +1005,14 @@ exports.readFiles = readFiles;
 
 
 /***/ }),
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */
+/* 32 */,
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var classNameParser = __webpack_require__(20);
-var fileParser = __webpack_require__(22);
+var classNameParser = __webpack_require__(10);
+var fileParser = __webpack_require__(31);
 var fetchFileNames = fileParser.fetchFileNames, readFiles = fileParser.readFiles;
 var parseClassName = classNameParser.parseClassName;
 var extensions = ['.ts', '.tsx'];
@@ -952,7 +1028,29 @@ module.exports = { fileParser: fileParser, classNameParser: classNameParser };
 
 
 /***/ }),
-/* 28 */
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -961,7 +1059,7 @@ module.exports = { fileParser: fileParser, classNameParser: classNameParser };
 const fs = __webpack_require__(0)
 
 const BUF_LENGTH = 64 * 1024
-const _buff = __webpack_require__(15)(BUF_LENGTH)
+const _buff = __webpack_require__(25)(BUF_LENGTH)
 
 function copyFileSync (srcFile, destFile, options) {
   const overwrite = options.overwrite
@@ -1000,7 +1098,7 @@ module.exports = copyFileSync
 
 
 /***/ }),
-/* 29 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1008,7 +1106,7 @@ module.exports = copyFileSync
 
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
-const copyFileSync = __webpack_require__(28)
+const copyFileSync = __webpack_require__(56)
 const mkdir = __webpack_require__(3)
 
 function copySync (src, dest, options) {
@@ -1069,7 +1167,7 @@ module.exports = copySync
 
 
 /***/ }),
-/* 30 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1077,7 +1175,7 @@ module.exports = copySync
 
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
-const ncp = __webpack_require__(12)
+const ncp = __webpack_require__(22)
 const mkdir = __webpack_require__(3)
 const pathExists = __webpack_require__(4).pathExists
 
@@ -1130,27 +1228,27 @@ module.exports = copy
 
 
 /***/ }),
-/* 31 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const u = __webpack_require__(2).fromCallback
 module.exports = {
-  copy: u(__webpack_require__(30))
+  copy: u(__webpack_require__(58))
 }
 
 
 /***/ }),
-/* 32 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 const u = __webpack_require__(2).fromCallback
-const fs = __webpack_require__(5)
+const fs = __webpack_require__(7)
 const path = __webpack_require__(1)
 const mkdir = __webpack_require__(3)
-const remove = __webpack_require__(7)
+const remove = __webpack_require__(8)
 
 const emptyDir = u(function emptyDir (dir, callback) {
   callback = callback || function () {}
@@ -1195,7 +1293,7 @@ module.exports = {
 
 
 /***/ }),
-/* 33 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1248,15 +1346,15 @@ module.exports = {
 
 
 /***/ }),
-/* 34 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const file = __webpack_require__(33)
-const link = __webpack_require__(35)
-const symlink = __webpack_require__(38)
+const file = __webpack_require__(61)
+const link = __webpack_require__(63)
+const symlink = __webpack_require__(66)
 
 module.exports = {
   // file
@@ -1278,7 +1376,7 @@ module.exports = {
 
 
 /***/ }),
-/* 35 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1346,7 +1444,7 @@ module.exports = {
 
 
 /***/ }),
-/* 36 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1452,7 +1550,7 @@ module.exports = {
 
 
 /***/ }),
-/* 37 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1490,7 +1588,7 @@ module.exports = {
 
 
 /***/ }),
-/* 38 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1503,11 +1601,11 @@ const _mkdirs = __webpack_require__(3)
 const mkdirs = _mkdirs.mkdirs
 const mkdirsSync = _mkdirs.mkdirsSync
 
-const _symlinkPaths = __webpack_require__(36)
+const _symlinkPaths = __webpack_require__(64)
 const symlinkPaths = _symlinkPaths.symlinkPaths
 const symlinkPathsSync = _symlinkPaths.symlinkPathsSync
 
-const _symlinkType = __webpack_require__(37)
+const _symlinkType = __webpack_require__(65)
 const symlinkType = _symlinkType.symlinkType
 const symlinkTypeSync = _symlinkType.symlinkTypeSync
 
@@ -1563,46 +1661,46 @@ module.exports = {
 
 
 /***/ }),
-/* 39 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const assign = __webpack_require__(49)
+const assign = __webpack_require__(77)
 
 const fs = {}
 
 // Export graceful-fs:
-assign(fs, __webpack_require__(13))
+assign(fs, __webpack_require__(23))
 // Export extra methods:
-assign(fs, __webpack_require__(31))
-assign(fs, __webpack_require__(11))
+assign(fs, __webpack_require__(59))
+assign(fs, __webpack_require__(21))
 assign(fs, __webpack_require__(3))
-assign(fs, __webpack_require__(7))
-assign(fs, __webpack_require__(40))
-assign(fs, __webpack_require__(46))
-assign(fs, __webpack_require__(45))
-assign(fs, __webpack_require__(32))
-assign(fs, __webpack_require__(34))
-assign(fs, __webpack_require__(47))
+assign(fs, __webpack_require__(8))
+assign(fs, __webpack_require__(68))
+assign(fs, __webpack_require__(74))
+assign(fs, __webpack_require__(73))
+assign(fs, __webpack_require__(60))
+assign(fs, __webpack_require__(62))
+assign(fs, __webpack_require__(75))
 assign(fs, __webpack_require__(4))
 
 module.exports = fs
 
 
 /***/ }),
-/* 40 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 const u = __webpack_require__(2).fromCallback
-const jsonFile = __webpack_require__(8)
+const jsonFile = __webpack_require__(12)
 
-jsonFile.outputJsonSync = __webpack_require__(41)
-jsonFile.outputJson = u(__webpack_require__(42))
+jsonFile.outputJsonSync = __webpack_require__(69)
+jsonFile.outputJson = u(__webpack_require__(70))
 // aliases
 jsonFile.outputJSONSync = jsonFile.outputJSONSync
 jsonFile.outputJSON = jsonFile.outputJson
@@ -1615,7 +1713,7 @@ module.exports = jsonFile
 
 
 /***/ }),
-/* 41 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1624,7 +1722,7 @@ module.exports = jsonFile
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
 const mkdir = __webpack_require__(3)
-const jsonFile = __webpack_require__(8)
+const jsonFile = __webpack_require__(12)
 
 function outputJsonSync (file, data, options) {
   const dir = path.dirname(file)
@@ -1640,7 +1738,7 @@ module.exports = outputJsonSync
 
 
 /***/ }),
-/* 42 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1649,7 +1747,7 @@ module.exports = outputJsonSync
 const path = __webpack_require__(1)
 const mkdir = __webpack_require__(3)
 const pathExists = __webpack_require__(4).pathExists
-const jsonFile = __webpack_require__(8)
+const jsonFile = __webpack_require__(12)
 
 function outputJson (file, data, options, callback) {
   if (typeof options === 'function') {
@@ -1674,7 +1772,7 @@ module.exports = outputJson
 
 
 /***/ }),
-/* 43 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1682,7 +1780,7 @@ module.exports = outputJson
 
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
-const invalidWin32Path = __webpack_require__(14).invalidWin32Path
+const invalidWin32Path = __webpack_require__(24).invalidWin32Path
 
 const o777 = parseInt('0777', 8)
 
@@ -1740,7 +1838,7 @@ module.exports = mkdirsSync
 
 
 /***/ }),
-/* 44 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1748,7 +1846,7 @@ module.exports = mkdirsSync
 
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
-const invalidWin32Path = __webpack_require__(14).invalidWin32Path
+const invalidWin32Path = __webpack_require__(24).invalidWin32Path
 
 const o777 = parseInt('0777', 8)
 
@@ -1810,7 +1908,7 @@ module.exports = mkdirs
 
 
 /***/ }),
-/* 45 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1818,10 +1916,10 @@ module.exports = mkdirs
 
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
-const copySync = __webpack_require__(11).copySync
-const removeSync = __webpack_require__(7).removeSync
+const copySync = __webpack_require__(21).copySync
+const removeSync = __webpack_require__(8).removeSync
 const mkdirpSync = __webpack_require__(3).mkdirsSync
-const buffer = __webpack_require__(15)
+const buffer = __webpack_require__(25)
 
 function moveSync (src, dest, options) {
   options = options || {}
@@ -1935,7 +2033,7 @@ module.exports = {
 
 
 /***/ }),
-/* 46 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1949,9 +2047,9 @@ module.exports = {
 
 const u = __webpack_require__(2).fromCallback
 const fs = __webpack_require__(0)
-const ncp = __webpack_require__(12)
+const ncp = __webpack_require__(22)
 const path = __webpack_require__(1)
-const remove = __webpack_require__(7).remove
+const remove = __webpack_require__(8).remove
 const mkdirp = __webpack_require__(3).mkdirs
 
 function move (source, dest, options, callback) {
@@ -2104,7 +2202,7 @@ module.exports = {
 
 
 /***/ }),
-/* 47 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2151,7 +2249,7 @@ module.exports = {
 
 
 /***/ }),
-/* 48 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2159,7 +2257,7 @@ module.exports = {
 
 const fs = __webpack_require__(0)
 const path = __webpack_require__(1)
-const assert = __webpack_require__(10)
+const assert = __webpack_require__(13)
 
 const isWindows = (process.platform === 'win32')
 
@@ -2454,7 +2552,7 @@ rimraf.sync = rimrafSync
 
 
 /***/ }),
-/* 49 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2477,14 +2575,14 @@ module.exports = assign
 
 
 /***/ }),
-/* 50 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 const fs = __webpack_require__(0)
-const os = __webpack_require__(61)
+const os = __webpack_require__(88)
 const path = __webpack_require__(1)
 
 // HFS, ext{2,3}, FAT do not, Node.js v0.10 does not
@@ -2556,10 +2654,10 @@ module.exports = {
 
 
 /***/ }),
-/* 51 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Stream = __webpack_require__(17).Stream
+var Stream = __webpack_require__(27).Stream
 
 module.exports = legacy
 
@@ -2680,11 +2778,11 @@ function legacy (fs) {
 
 
 /***/ }),
-/* 52 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var fs = __webpack_require__(16)
-var constants = __webpack_require__(60)
+var fs = __webpack_require__(26)
+var constants = __webpack_require__(87)
 
 var origCwd = process.cwd
 var cwd = null
@@ -3016,14 +3114,14 @@ function chownErOk (er) {
 
 
 /***/ }),
-/* 53 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var _fs
 try {
   _fs = __webpack_require__(0)
 } catch (_) {
-  _fs = __webpack_require__(5)
+  _fs = __webpack_require__(7)
 }
 
 function readFile (file, options, callback) {
@@ -3154,7 +3252,7 @@ module.exports = jsonfile
 
 
 /***/ }),
-/* 54 */
+/* 82 */
 /***/ (function(module, exports) {
 
 // simple mutable assign (extracted from fs-extra)
@@ -3176,20 +3274,20 @@ module.exports = Object.assign || _assign
 
 
 /***/ }),
-/* 55 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assert = __webpack_require__(10)
+var assert = __webpack_require__(13)
 var fs
 try {
   fs = __webpack_require__(0)
 } catch (e) {
-  fs = __webpack_require__(5)
+  fs = __webpack_require__(7)
 }
 var path = __webpack_require__(1)
-var Readable = __webpack_require__(17).Readable
-var util = __webpack_require__(18)
-var assign = __webpack_require__(54)
+var Readable = __webpack_require__(27).Readable
+var util = __webpack_require__(28)
+var assign = __webpack_require__(82)
 
 function Walker (dir, options) {
   assert.strictEqual(typeof dir, 'string', '`dir` parameter should be of type string. Got type: ' + typeof dir)
@@ -3239,7 +3337,7 @@ module.exports = walk
 
 
 /***/ }),
-/* 56 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3271,16 +3369,15 @@ module.exports = function resolvable(target) {
 
 
 /***/ }),
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */
+/* 85 */,
+/* 86 */,
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = require("constants");
 
 /***/ }),
-/* 61 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports = require("os");

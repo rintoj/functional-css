@@ -10,23 +10,28 @@ const extractSass = new ExtractTextPlugin({
   filename: '[name].min.css',
 });
 
+const isProd = process.env.NODE_ENV === 'production'
+
 module.exports = {
   bail: true,
-  entry: {
+  entry: Object.assign({
+    parser: path.resolve('./src/parser/index.ts'),
+  }, isProd ? {
     'dark-theme': path.resolve('./scripts/dark-theme.js'),
     'light-theme': path.resolve('./scripts/dark-theme.js'),
     core: path.resolve('./scripts/core.js'),
     index: path.resolve('./scripts/index.js'),
     theme: path.resolve('./scripts/theme.js'),
-    parser: path.resolve('./src/parser/index.ts'),
+  } : {
     test: path.resolve('./src/parser/index.spec.ts')
-  },
+  }),
   output: {
     path: path.resolve('./dist'),
     filename: '[name].js',
     chunkFilename: '[id].js',
   },
   resolve: {
+    modules: [path.resolve('./src'), path.resolve('./scripts'), path.resolve('./node_modules')],
     extensions: ['.js', '.ts'],
   },
   module: {

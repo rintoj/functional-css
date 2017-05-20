@@ -63,108 +63,16 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
-/******/ (Array(19).concat([
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var chai = __webpack_require__(80);
-var class_name_parser_1 = __webpack_require__(20);
-var expect = chai.expect;
-describe('parseClassName', function () {
-    it('should be a function', function () {
-        expect(typeof class_name_parser_1.parseClassName).be.equals('function');
-    });
-});
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function parseClassName(code) {
-    return (code || '').split('\n')
-        .map(function (line) { return /class(Name)?=["{'`]([^{}"'`]+)['}"`]/g.exec(line); })
-        .filter(function (result) { return result != undefined; })
-        .map(function (result) { return result[2]; })
-        .reduce(function (a, i) { return a.concat(i.split(' ')); }, []);
-}
-exports.parseClassName = parseClassName;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(21);
-__webpack_require__(19);
-
-
-/***/ }),
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */
+/******/ ([
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */
 /***/ (function(module, exports) {
 
 /*!
@@ -203,7 +111,7 @@ module.exports = function (obj, key, value) {
 
 
 /***/ }),
-/* 70 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -264,15 +172,111 @@ module.exports = {
 
 
 /***/ }),
-/* 71 */
+/* 7 */,
+/* 8 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(85);
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function uniq(classNames) {
+    return Object.keys((classNames || []).reduce(function (a, i) {
+        a[i] = true;
+        return a;
+    }, {}));
+}
+function extractExpression(source, begin, end, index) {
+    if (index === void 0) { index = 0; }
+    var expressions = [];
+    end = end || begin;
+    for (var si = index; si < source.length; si++) {
+        var stack = [];
+        var beginFound = false;
+        var expression = '';
+        var startIndex = void 0, endIndex = void 0, i = void 0;
+        for (i = si; i < source.length; i++) {
+            var startTag = source.substr(i, begin.length);
+            var endTag = source.substr(i, end.length);
+            if (beginFound && stack.length === 0) {
+                expressions.push({ expression: expression, startIndex: startIndex, endIndex: endIndex, source: source });
+                break;
+            }
+            if (startTag !== begin && !beginFound)
+                continue;
+            if (stack.slice(-1)[0] === begin && endTag === end) {
+                i += (endTag.length - 1);
+                stack.pop();
+                endIndex = i;
+            }
+            else if (startTag === begin) {
+                startIndex = i;
+                stack.push(startTag);
+                i += (startTag.length - 1);
+                beginFound = true;
+            }
+            else {
+                expression += source[i];
+            }
+        }
+        si = i;
+        if (stack.length !== 0) {
+            throw new Error("Invalid expression: '" + expression + "'. No matching expression found for '" + stack.slice(-1)[0] + "'");
+        }
+    }
+    return expressions;
+}
+exports.extractExpression = extractExpression;
+function extractClassStrings(code, beginFrom) {
+    if (beginFrom === void 0) { beginFrom = 0; }
+    var index = code.indexOf('className', beginFrom);
+    index = index < 0 ? code.indexOf('class', beginFrom) : index;
+    if (index < 0)
+        return [''];
+    var expressions = extractExpression(code, '"', '"', index)
+        .map(function (i) { return i.expression; });
+    if (expressions.length === 0) {
+        expressions = extractExpression(code, '\'', '\'', index)
+            .map(function (i) { return i.expression; });
+    }
+    if (expressions.length === 0) {
+        expressions = extractExpression(code, '`', '`', index)
+            .map(function (i) { return i.expression; });
+    }
+    if (expressions.length === 0) {
+        expressions = extractExpression(code, '{', '}', index)
+            .map(function (i) { return i.expression.replace(/^\s*['"`]|['"`]\s*/g); });
+    }
+    return expressions;
+}
+exports.extractClassStrings = extractClassStrings;
+function parseClassNames(code) {
+    return uniq((code || '').split('\n')
+        .map(function (line) { return extractClassStrings(line); })
+        .reduce(function (a, i) { return a.concat(i); }, [])
+        .reduce(function (a, i) { return a.concat(i.split(' ')); }, [])
+        .filter(function (className) { return className.trim() !== ''; }));
+}
+exports.parseClassNames = parseClassNames;
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
-var getName = __webpack_require__(75);
-var getProperties = __webpack_require__(94);
-var getEnumerableProperties = __webpack_require__(91);
+var getName = __webpack_require__(16);
+var getProperties = __webpack_require__(48);
+var getEnumerableProperties = __webpack_require__(45);
 
 module.exports = inspect;
 
@@ -605,14 +609,9 @@ function objectToString(o) {
 
 
 /***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(104);
-
-
-/***/ }),
-/* 73 */
+/* 12 */,
+/* 13 */,
+/* 14 */
 /***/ (function(module, exports) {
 
 /*!
@@ -734,7 +733,7 @@ AssertionError.prototype.toJSON = function (stack) {
 
 
 /***/ }),
-/* 74 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /*!
@@ -760,7 +759,7 @@ module.exports = function (obj, args) {
 
 
 /***/ }),
-/* 75 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /*!
@@ -788,7 +787,7 @@ module.exports = function (func) {
 
 
 /***/ }),
-/* 76 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -797,7 +796,7 @@ module.exports = function (func) {
  * MIT Licensed
  */
 
-var hasProperty = __webpack_require__(77);
+var hasProperty = __webpack_require__(18);
 
 /**
  * ### .getPathInfo(path, object)
@@ -905,7 +904,7 @@ function _getPathValue (parsed, obj, index) {
 
 
 /***/ }),
-/* 77 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -914,7 +913,7 @@ function _getPathValue (parsed, obj, index) {
  * MIT Licensed
  */
 
-var type = __webpack_require__(72);
+var type = __webpack_require__(9);
 
 /**
  * ### .hasProperty(object, name)
@@ -975,7 +974,7 @@ module.exports = function hasProperty(name, obj) {
 
 
 /***/ }),
-/* 78 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -988,8 +987,8 @@ module.exports = function hasProperty(name, obj) {
  * Module dependancies
  */
 
-var inspect = __webpack_require__(71);
-var config = __webpack_require__(70);
+var inspect = __webpack_require__(11);
+var config = __webpack_require__(6);
 
 /**
  * ### .objDisplay (object)
@@ -1031,7 +1030,7 @@ module.exports = function (obj) {
 
 
 /***/ }),
-/* 79 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /*!
@@ -1082,14 +1081,260 @@ module.exports = function (assertion, object, includeAll) {
 
 
 /***/ }),
-/* 80 */
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(81);
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var chai = __webpack_require__(34);
+var class_name_parser_1 = __webpack_require__(10);
+var expect = chai.expect;
+describe('parseClassNames', function () {
+    it('should be a function', function () {
+        expect(typeof class_name_parser_1.parseClassNames).be.equals('function');
+    });
+    it('should extract class names if className is given', function () {
+        var result = class_name_parser_1.parseClassNames('<div className="flx"></div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should extract react style class names', function () {
+        var result = class_name_parser_1.parseClassNames('<div className={"flx"}></div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should extract class names from multiple lines', function () {
+        var result = class_name_parser_1.parseClassNames("\n      <div className={\"flx\"}> </div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should extract react style class names with single quote', function () {
+        var result = class_name_parser_1.parseClassNames('<div className={\'flx\'}> </div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should extract react style class names with back quote', function () {
+        var result = class_name_parser_1.parseClassNames('<div className={\`flx\`}> </div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should ignore any spaces before after =', function () {
+        var result = class_name_parser_1.parseClassNames('<div className  =   {\'flx\'}> </div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should ignore any spaces before or after {}', function () {
+        var result = class_name_parser_1.parseClassNames('<div className=   {  "flx"   }   > </div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should ignore any spaces before or after quotes', function () {
+        var result = class_name_parser_1.parseClassNames('<div className=   {  "  flx  "   }   > </div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should extract class names from with in multiple attributes', function () {
+        var result = class_name_parser_1.parseClassNames("\n      <div class=\"flx\" draggable onClick={this.onClick.bind(this)}>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should extract multiple class names', function () {
+        var result = class_name_parser_1.parseClassNames("\n      <div class=\"flx flx1 tc\" draggable onClick={this.onClick.bind(this)}>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(3);
+        expect(result[0]).be.equal('flx');
+        expect(result[1]).be.equal('flx1');
+        expect(result[2]).be.equal('tc');
+    });
+    it('should extract class names if "class" is given', function () {
+        var result = class_name_parser_1.parseClassNames('<div class="flx"></div>');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should ignore any spaces, tabs before or after', function () {
+        var result = class_name_parser_1.parseClassNames('    <div class="flx "      > ');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should return unique class names', function () {
+        var result = class_name_parser_1.parseClassNames('    <div class="flx flx"      > ');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx');
+    });
+    it('should return multiple class names', function () {
+        var result = class_name_parser_1.parseClassNames('    <div class="flx flx1"> ');
+        expect(result).be.a('array');
+        expect(result).be.length(2);
+        expect(result[0]).be.equal('flx');
+        expect(result[1]).be.equal('flx1');
+    });
+    it('should return multiple class names from multiple attributes', function () {
+        var result = class_name_parser_1.parseClassNames('     <div class="flx flx1" class="tc"> ');
+        expect(result).be.a('array');
+        expect(result).be.length(3);
+        expect(result[0]).be.equal('flx');
+        expect(result[1]).be.equal('flx1');
+        expect(result[2]).be.equal('tc');
+    });
+});
+describe('extractClassStrings', function () {
+    it('should extract class string from "class" attribute', function () {
+        var result = class_name_parser_1.extractClassStrings("\n      <div class=\"flx flx1\"></div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx flx1');
+    });
+    it('should extract class string from "className" attribute', function () {
+        var result = class_name_parser_1.extractClassStrings("\n      <div className=\"flx flx1\"></div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx flx1');
+    });
+    it('should extract class string with {}', function () {
+        var result = class_name_parser_1.extractClassStrings("\n      <div className={\"flx flx1\"}></div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx flx1');
+    });
+    it('should extract class string with single quote', function () {
+        var result = class_name_parser_1.extractClassStrings("\n      <div className='flx flx1'></div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx flx1');
+    });
+    it('should extract class string with back quote', function () {
+        var result = class_name_parser_1.extractClassStrings("\n      <div className=`flx flx1`></div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx flx1');
+    });
+    it('should extract class string with back quote', function () {
+        var result = class_name_parser_1.extractClassStrings("\n      <div className={`flx flx1`}></div>\n    ");
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.equal('flx flx1');
+    });
+});
+describe('extractExpression', function () {
+    it('should extract an expression enclose in single quote', function () {
+        var result = class_name_parser_1.extractExpression(" <div className='flx flx1'></div> ", '\'');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.a('object');
+        expect(result[0]).have.property('expression');
+        expect(result[0].expression).be.equal('flx flx1');
+        expect(result[0]).have.property('startIndex');
+        expect(result[0].startIndex).be.equal(16);
+        expect(result[0]).have.property('endIndex');
+        expect(result[0].endIndex).be.equal(25);
+    });
+    it('should extract an expression enclose in double quote', function () {
+        var result = class_name_parser_1.extractExpression(" <div className=\"flx flx1\"></div> ", '"');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.a('object');
+        expect(result[0]).have.property('expression');
+        expect(result[0].expression).be.equal('flx flx1');
+        expect(result[0]).have.property('startIndex');
+        expect(result[0].startIndex).be.equal(16);
+        expect(result[0]).have.property('endIndex');
+        expect(result[0].endIndex).be.equal(25);
+    });
+    it('should extract an expression enclose in {}', function () {
+        var result = class_name_parser_1.extractExpression(" <div className={\"flx flx1\"}></div> ", '{', '}');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.a('object');
+        expect(result[0]).have.property('expression');
+        expect(result[0].expression).be.equal('"flx flx1"');
+        expect(result[0]).have.property('startIndex');
+        expect(result[0].startIndex).be.equal(16);
+        expect(result[0]).have.property('endIndex');
+        expect(result[0].endIndex).be.equal(27);
+    });
+    it('should extract an expression enclose in ${}', function () {
+        var result = class_name_parser_1.extractExpression(' <div className={"flx ${test} flx1"}></div> ', '${', '}');
+        expect(result).be.a('array');
+        expect(result).be.length(1);
+        expect(result[0]).be.a('object');
+        expect(result[0]).have.property('expression');
+        expect(result[0].expression).be.equal('test');
+        expect(result[0]).have.property('startIndex');
+        expect(result[0].startIndex).be.equal(22);
+        expect(result[0]).have.property('endIndex');
+        expect(result[0].endIndex).be.equal(28);
+    });
+    it('should extract all expressions enclose in ${}', function () {
+        var result = class_name_parser_1.extractExpression(' <div className={"flx ${test} ${test1} flx1"}></div> ', '${', '}');
+        expect(result).be.a('array');
+        expect(result).be.length(2);
+        expect(result[0]).be.a('object');
+        expect(result[0]).have.property('expression');
+        expect(result[0].expression).be.equal('test');
+        expect(result[0]).have.property('startIndex');
+        expect(result[0].startIndex).be.equal(22);
+        expect(result[0]).have.property('endIndex');
+        expect(result[0].endIndex).be.equal(28);
+        expect(result[1]).be.a('object');
+        expect(result[1]).have.property('expression');
+        expect(result[1].expression).be.equal('test1');
+        expect(result[1]).have.property('startIndex');
+        expect(result[1].startIndex).be.equal(30);
+        expect(result[1]).have.property('endIndex');
+        expect(result[1].endIndex).be.equal(37);
+    });
+});
 
 
 /***/ }),
-/* 81 */
+/* 30 */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+/* 31 */,
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__(30);
+__webpack_require__(29);
+
+
+/***/ }),
+/* 33 */,
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(35);
+
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -1111,13 +1356,13 @@ exports.version = '3.5.0';
  * Assertion Error
  */
 
-exports.AssertionError = __webpack_require__(73);
+exports.AssertionError = __webpack_require__(14);
 
 /*!
  * Utils for plugins (not exported)
  */
 
-var util = __webpack_require__(95);
+var util = __webpack_require__(49);
 
 /**
  * # .use(function)
@@ -1148,47 +1393,47 @@ exports.util = util;
  * Configuration
  */
 
-var config = __webpack_require__(70);
+var config = __webpack_require__(6);
 exports.config = config;
 
 /*!
  * Primary `Assertion` prototype
  */
 
-var assertion = __webpack_require__(82);
+var assertion = __webpack_require__(36);
 exports.use(assertion);
 
 /*!
  * Core Assertions
  */
 
-var core = __webpack_require__(83);
+var core = __webpack_require__(37);
 exports.use(core);
 
 /*!
  * Expect interface
  */
 
-var expect = __webpack_require__(85);
+var expect = __webpack_require__(39);
 exports.use(expect);
 
 /*!
  * Should interface
  */
 
-var should = __webpack_require__(86);
+var should = __webpack_require__(40);
 exports.use(should);
 
 /*!
  * Assert interface
  */
 
-var assert = __webpack_require__(84);
+var assert = __webpack_require__(38);
 exports.use(assert);
 
 
 /***/ }),
-/* 82 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -1198,7 +1443,7 @@ exports.use(assert);
  * MIT Licensed
  */
 
-var config = __webpack_require__(70);
+var config = __webpack_require__(6);
 
 module.exports = function (_chai, util) {
   /*!
@@ -1325,7 +1570,7 @@ module.exports = function (_chai, util) {
 
 
 /***/ }),
-/* 83 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /*!
@@ -3191,7 +3436,7 @@ module.exports = function (chai, _) {
 
 
 /***/ }),
-/* 84 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /*!
@@ -4842,7 +5087,7 @@ module.exports = function (chai, util) {
 
 
 /***/ }),
-/* 85 */
+/* 39 */
 /***/ (function(module, exports) {
 
 /*!
@@ -4882,7 +5127,7 @@ module.exports = function (chai, util) {
 
 
 /***/ }),
-/* 86 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5089,7 +5334,7 @@ module.exports = function (chai, util) {
 
 
 /***/ }),
-/* 87 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5102,9 +5347,9 @@ module.exports = function (chai, util) {
  * Module dependencies
  */
 
-var transferFlags = __webpack_require__(79);
-var flag = __webpack_require__(69);
-var config = __webpack_require__(70);
+var transferFlags = __webpack_require__(20);
+var flag = __webpack_require__(5);
+var config = __webpack_require__(6);
 
 /*!
  * Module variables
@@ -5207,7 +5452,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
 
 
 /***/ }),
-/* 88 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5216,7 +5461,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
  * MIT Licensed
  */
 
-var config = __webpack_require__(70);
+var config = __webpack_require__(6);
 
 /**
  * ### .addMethod (ctx, name, method)
@@ -5243,7 +5488,7 @@ var config = __webpack_require__(70);
  * @name addMethod
  * @api public
  */
-var flag = __webpack_require__(69);
+var flag = __webpack_require__(5);
 
 module.exports = function (ctx, name, method) {
   ctx[name] = function () {
@@ -5257,7 +5502,7 @@ module.exports = function (ctx, name, method) {
 
 
 /***/ }),
-/* 89 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5266,8 +5511,8 @@ module.exports = function (ctx, name, method) {
  * MIT Licensed
  */
 
-var config = __webpack_require__(70);
-var flag = __webpack_require__(69);
+var config = __webpack_require__(6);
+var flag = __webpack_require__(5);
 
 /**
  * ### addProperty (ctx, name, getter)
@@ -5311,7 +5556,7 @@ module.exports = function (ctx, name, getter) {
 
 
 /***/ }),
-/* 90 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5334,9 +5579,9 @@ module.exports = function (ctx, name, getter) {
  * @api public
  */
 
-var AssertionError = __webpack_require__(73);
-var flag = __webpack_require__(69);
-var type = __webpack_require__(72);
+var AssertionError = __webpack_require__(14);
+var flag = __webpack_require__(5);
+var type = __webpack_require__(9);
 
 module.exports = function (obj, types) {
   var obj = flag(obj, 'object');
@@ -5359,7 +5604,7 @@ module.exports = function (obj, types) {
 
 
 /***/ }),
-/* 91 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5391,7 +5636,7 @@ module.exports = function getEnumerableProperties(object) {
 
 
 /***/ }),
-/* 92 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5404,10 +5649,10 @@ module.exports = function getEnumerableProperties(object) {
  * Module dependancies
  */
 
-var flag = __webpack_require__(69)
-  , getActual = __webpack_require__(74)
-  , inspect = __webpack_require__(71)
-  , objDisplay = __webpack_require__(78);
+var flag = __webpack_require__(5)
+  , getActual = __webpack_require__(15)
+  , inspect = __webpack_require__(11)
+  , objDisplay = __webpack_require__(19);
 
 /**
  * ### .getMessage(object, message, negateMessage)
@@ -5448,7 +5693,7 @@ module.exports = function (obj, args) {
 
 
 /***/ }),
-/* 93 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5458,7 +5703,7 @@ module.exports = function (obj, args) {
  * MIT Licensed
  */
 
-var getPathInfo = __webpack_require__(76);
+var getPathInfo = __webpack_require__(17);
 
 /**
  * ### .getPathValue(path, object)
@@ -5497,7 +5742,7 @@ module.exports = function(path, obj) {
 
 
 /***/ }),
-/* 94 */
+/* 48 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5539,7 +5784,7 @@ module.exports = function getProperties(object) {
 
 
 /***/ }),
-/* 95 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5558,124 +5803,124 @@ var exports = module.exports = {};
  * test utility
  */
 
-exports.test = __webpack_require__(99);
+exports.test = __webpack_require__(53);
 
 /*!
  * type utility
  */
 
-exports.type = __webpack_require__(72);
+exports.type = __webpack_require__(9);
 
 /*!
  * expectTypes utility
  */
-exports.expectTypes = __webpack_require__(90);
+exports.expectTypes = __webpack_require__(44);
 
 /*!
  * message utility
  */
 
-exports.getMessage = __webpack_require__(92);
+exports.getMessage = __webpack_require__(46);
 
 /*!
  * actual utility
  */
 
-exports.getActual = __webpack_require__(74);
+exports.getActual = __webpack_require__(15);
 
 /*!
  * Inspect util
  */
 
-exports.inspect = __webpack_require__(71);
+exports.inspect = __webpack_require__(11);
 
 /*!
  * Object Display util
  */
 
-exports.objDisplay = __webpack_require__(78);
+exports.objDisplay = __webpack_require__(19);
 
 /*!
  * Flag utility
  */
 
-exports.flag = __webpack_require__(69);
+exports.flag = __webpack_require__(5);
 
 /*!
  * Flag transferring utility
  */
 
-exports.transferFlags = __webpack_require__(79);
+exports.transferFlags = __webpack_require__(20);
 
 /*!
  * Deep equal utility
  */
 
-exports.eql = __webpack_require__(100);
+exports.eql = __webpack_require__(54);
 
 /*!
  * Deep path value
  */
 
-exports.getPathValue = __webpack_require__(93);
+exports.getPathValue = __webpack_require__(47);
 
 /*!
  * Deep path info
  */
 
-exports.getPathInfo = __webpack_require__(76);
+exports.getPathInfo = __webpack_require__(17);
 
 /*!
  * Check if a property exists
  */
 
-exports.hasProperty = __webpack_require__(77);
+exports.hasProperty = __webpack_require__(18);
 
 /*!
  * Function name
  */
 
-exports.getName = __webpack_require__(75);
+exports.getName = __webpack_require__(16);
 
 /*!
  * add Property
  */
 
-exports.addProperty = __webpack_require__(89);
+exports.addProperty = __webpack_require__(43);
 
 /*!
  * add Method
  */
 
-exports.addMethod = __webpack_require__(88);
+exports.addMethod = __webpack_require__(42);
 
 /*!
  * overwrite Property
  */
 
-exports.overwriteProperty = __webpack_require__(98);
+exports.overwriteProperty = __webpack_require__(52);
 
 /*!
  * overwrite Method
  */
 
-exports.overwriteMethod = __webpack_require__(97);
+exports.overwriteMethod = __webpack_require__(51);
 
 /*!
  * Add a chainable method
  */
 
-exports.addChainableMethod = __webpack_require__(87);
+exports.addChainableMethod = __webpack_require__(41);
 
 /*!
  * Overwrite chainable method
  */
 
-exports.overwriteChainableMethod = __webpack_require__(96);
+exports.overwriteChainableMethod = __webpack_require__(50);
 
 
 /***/ }),
-/* 96 */
+/* 50 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5735,7 +5980,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
 
 
 /***/ }),
-/* 97 */
+/* 51 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5793,7 +6038,7 @@ module.exports = function (ctx, name, method) {
 
 
 /***/ }),
-/* 98 */
+/* 52 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5854,7 +6099,7 @@ module.exports = function (ctx, name, getter) {
 
 
 /***/ }),
-/* 99 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5867,7 +6112,7 @@ module.exports = function (ctx, name, getter) {
  * Module dependancies
  */
 
-var flag = __webpack_require__(69);
+var flag = __webpack_require__(5);
 
 /**
  * # test(object, expression)
@@ -5888,14 +6133,14 @@ module.exports = function (obj, args) {
 
 
 /***/ }),
-/* 100 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(101);
+module.exports = __webpack_require__(55);
 
 
 /***/ }),
-/* 101 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -5908,14 +6153,14 @@ module.exports = __webpack_require__(101);
  * Module dependencies
  */
 
-var type = __webpack_require__(102);
+var type = __webpack_require__(9);
 
 /*!
  * Buffer.isBuffer browser shim
  */
 
 var Buffer;
-try { Buffer = __webpack_require__(105).Buffer; }
+try { Buffer = __webpack_require__(86).Buffer; }
 catch(ex) {
   Buffer = {};
   Buffer.isBuffer = function() { return false; }
@@ -6158,162 +6403,36 @@ function objectEqual(a, b, m) {
 
 
 /***/ }),
-/* 102 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(103);
-
-
-/***/ }),
-/* 103 */
-/***/ (function(module, exports) {
-
-/*!
- * type-detect
- * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Primary Exports
- */
-
-var exports = module.exports = getType;
-
-/*!
- * Detectable javascript natives
- */
-
-var natives = {
-    '[object Array]': 'array'
-  , '[object RegExp]': 'regexp'
-  , '[object Function]': 'function'
-  , '[object Arguments]': 'arguments'
-  , '[object Date]': 'date'
-};
-
-/**
- * ### typeOf (obj)
- *
- * Use several different techniques to determine
- * the type of object being tested.
- *
- *
- * @param {Mixed} object
- * @return {String} object type
- * @api public
- */
-
-function getType (obj) {
-  var str = Object.prototype.toString.call(obj);
-  if (natives[str]) return natives[str];
-  if (obj === null) return 'null';
-  if (obj === undefined) return 'undefined';
-  if (obj === Object(obj)) return 'object';
-  return typeof obj;
-}
-
-exports.Library = Library;
-
-/**
- * ### Library
- *
- * Create a repository for custom type detection.
- *
- * ```js
- * var lib = new type.Library;
- * ```
- *
- */
-
-function Library () {
-  this.tests = {};
-}
-
-/**
- * #### .of (obj)
- *
- * Expose replacement `typeof` detection to the library.
- *
- * ```js
- * if ('string' === lib.of('hello world')) {
- *   // ...
- * }
- * ```
- *
- * @param {Mixed} object to test
- * @return {String} type
- */
-
-Library.prototype.of = getType;
-
-/**
- * #### .define (type, test)
- *
- * Add a test to for the `.test()` assertion.
- *
- * Can be defined as a regular expression:
- *
- * ```js
- * lib.define('int', /^[0-9]+$/);
- * ```
- *
- * ... or as a function:
- *
- * ```js
- * lib.define('bln', function (obj) {
- *   if ('boolean' === lib.of(obj)) return true;
- *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
- *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
- *   return !! ~blns.indexOf(obj);
- * });
- * ```
- *
- * @param {String} type
- * @param {RegExp|Function} test
- * @api public
- */
-
-Library.prototype.define = function (type, test) {
-  if (arguments.length === 1) return this.tests[type];
-  this.tests[type] = test;
-  return this;
-};
-
-/**
- * #### .test (obj, test)
- *
- * Assert that an object is of type. Will first
- * check natives, and if that does not pass it will
- * use the user defined custom tests.
- *
- * ```js
- * assert(lib.test('1', 'int'));
- * assert(lib.test('yes', 'bln'));
- * ```
- *
- * @param {Mixed} object
- * @param {String} type
- * @return {Boolean} result
- * @api public
- */
-
-Library.prototype.test = function (obj, type) {
-  if (type === getType(obj)) return true;
-  var test = this.tests[type];
-
-  if (test && 'regexp' === getType(test)) {
-    return test.test(obj);
-  } else if (test && 'function' === getType(test)) {
-    return test(obj);
-  } else {
-    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
-  }
-};
-
-
-/***/ }),
-/* 104 */
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */
 /***/ (function(module, exports) {
 
 /*!
@@ -6453,10 +6572,10 @@ Library.prototype.test = function(obj, type) {
 
 
 /***/ }),
-/* 105 */
+/* 86 */
 /***/ (function(module, exports) {
 
 module.exports = require("buffer");
 
 /***/ })
-/******/ ]));
+/******/ ]);

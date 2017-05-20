@@ -1,0 +1,8 @@
+{
+  "verbose": false,
+  "colours": false,
+  "ignore": [
+    ".git",
+    "node_modules"
+  ]
+}
