@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitReturns": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "lib": [
+      "dom",
+      "es2015"
+    ]
+  },
+  "filesGlob": [
+    "typings/index.d.ts"
+  ],
+  "types": [
+    "node"
+  ],
+  "exclude": [
+    "build",
+    "config",
+    "dist",
+    "node_modules",
+    "public",
+    "scripts",
+    ".cache"
+  ],
+  "compileOnSave": false,
+  "awesomeTypescriptLoaderOptions": {
+    "silent": true
+  }
+}

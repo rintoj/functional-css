@@ -18,6 +18,8 @@ module.exports = {
     core: path.resolve('./scripts/core.js'),
     index: path.resolve('./scripts/index.js'),
     theme: path.resolve('./scripts/theme.js'),
+    parser: path.resolve('./src/parser/index.ts'),
+    test: path.resolve('./src/parser/index.spec.ts')
   },
   output: {
     path: path.resolve('./dist'),
@@ -25,7 +27,7 @@ module.exports = {
     chunkFilename: '[id].js',
   },
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.ts'],
   },
   module: {
     loaders: [{
@@ -50,6 +52,9 @@ module.exports = {
         name: 'static/media/[name].[hash:8].[ext]',
       },
     }, {
+      test: /\.ts?$/,
+      loader: ['awesome-typescript-loader', 'tslint-loader']
+    }, {
       test: /\.s?css$/,
       loader: extractSass.extract({
         use: [{
@@ -67,6 +72,7 @@ module.exports = {
       },
     }],
   },
+  target: 'node',
   plugins: [
 
     /** production only plugins */
@@ -77,19 +83,19 @@ module.exports = {
       complete: chalk.yellow('█'),
       head: '»',
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true,
-        warnings: false,
-      },
-      mangle: {
-        screw_ie8: true,
-      },
-      output: {
-        comments: false,
-        screw_ie8: true,
-      },
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     screw_ie8: true,
+    //     warnings: false,
+    //   },
+    //   mangle: {
+    //     screw_ie8: true,
+    //   },
+    //   output: {
+    //     comments: false,
+    //     screw_ie8: true,
+    //   },
+    // }),
     new OptimizeCssAssetsPlugin({
       canPrint: false,
       assetNameRegExp: /\.min\.css$/,
