@@ -5,70 +5,52 @@ function uniq(classNames) {
   }, {}))
 }
 
-export function extractExpression(source: string, begin: string, end?: string, index: number = 0) {
+export function extractExpressions(source: string, begin: RegExp, end?: RegExp, index: number = 0) {
 
+  let i = 0
+  const stack = []
   const expressions = []
-  end = end || begin
 
-  for (let si = index; si < source.length; si++) {
-    const stack = []
-    let beginFound = false
-    let expression = ''
-    let startIndex, endIndex, i
+  while (i < source.length) {
+    const src = source.substr(i)
 
-    for (i = si; i < source.length; i++) {
-
-      const startTag = source.substr(i, begin.length)
-      const endTag = source.substr(i, end.length)
-
-      if (beginFound && stack.length === 0) {
-        expressions.push({ expression, startIndex, endIndex, source })
-        break
-      }
-      if (startTag !== begin && !beginFound) continue
-
-      if (stack.slice(-1)[0] === begin && endTag === end) {
-        i += (endTag.length - 1)
+    const startResult = begin.exec(src)
+    const endResult = end && end.exec(src)
+    if (startResult != undefined && (endResult == undefined || endResult.index > startResult.index)) {
+      if (end == undefined && stack.length > 0) {
+        expressions.push(source.substr(i, startResult.index))
         stack.pop()
-        endIndex = i
-      } else if (startTag === begin) {
-        startIndex = i
-        stack.push(startTag)
-        i += (startTag.length - 1)
-        beginFound = true
       } else {
-        expression += source[i]
+        stack.push(i + startResult.index + startResult[0].length)
       }
+      i += startResult.index + startResult[0].length
+      continue
+    } else if (end == undefined) {
+      return expressions
     }
 
-    si = i
-    if (stack.length !== 0) {
-      throw new Error(`Invalid expression: '${expression}'. No matching expression found for '${stack.slice(-1)[0]}'`)
+    if (endResult != undefined && stack.length > 0) {
+      expressions.push(source.substr(stack.slice(-1)[0], i + endResult.index - stack.slice(-1)[0]))
+      stack.pop()
+      i += endResult.index + endResult[0].length
+      continue
+    } else if (startResult == undefined) {
+      return expressions
     }
+
+    i += src.length
   }
 
   return expressions
 }
 
 export function extractClassStrings(code: string, beginFrom: number = 0): string[] {
-  let index = code.indexOf('className', beginFrom)
-  index = index < 0 ? code.indexOf('class', beginFrom) : index
-  if (index < 0) return ['']
-
-  let expressions = extractExpression(code, '"', '"', index)
-    .map(i => i.expression)
-  if (expressions.length === 0) {
-    expressions = extractExpression(code, '\'', '\'', index)
-      .map(i => i.expression)
-  }
-  if (expressions.length === 0) {
-    expressions = extractExpression(code, '`', '`', index)
-      .map(i => i.expression)
-  }
-  if (expressions.length === 0) {
-    expressions = extractExpression(code, '{', '}', index)
-      .map(i => i.expression.replace(/^\s*['"`]|['"`]\s*/g))
-  }
+  let expressions = extractExpressions(code, /class(Name)?\s*=\s*"/, /"/)
+  if (expressions.length === 0) expressions = extractExpressions(code, /class(Name)?\s*=\s*'/, /'/)
+  if (expressions.length === 0) expressions = extractExpressions(code, /class(Name)?\s*=\s*`/, /`/)
+  if (expressions.length === 0) expressions = extractExpressions(code, /class(Name)?\s*=\s*{\s*"/, /"\s*}\s*/)
+  if (expressions.length === 0) expressions = extractExpressions(code, /class(Name)?\s*=\s*{\s*'/, /'\s*}\s*/)
+  if (expressions.length === 0) expressions = extractExpressions(code, /class(Name)?\s*=\s*{\s*`/, /`\s*}\s*/)
   return expressions
 }
 

@@ -1,6 +1,6 @@
 import * as chai from 'chai'
 
-import { extractClassStrings, extractExpression, parseClassNames } from './class-name-parser'
+import { extractClassStrings, extractExpressions, parseClassNames } from './class-name-parser'
 
 const { expect } = chai
 
@@ -186,92 +186,65 @@ describe('extractClassStrings', () => {
 
 })
 
-describe('extractExpression', () => {
+describe('extractExpressions', () => {
 
   it('should extract an expression enclose in single quote', () => {
-    const result = extractExpression(` <div className='flx flx1'></div> `, '\'')
+    const result = extractExpressions(` <div className='flx flx1'></div> `, /'/)
     expect(result).be.a('array')
     expect(result).be.length(1)
-    expect(result[0]).be.a('object')
-    expect(result[0]).have.property('expression')
-    expect(result[0].expression).be.equal('flx flx1')
-
-    expect(result[0]).have.property('startIndex')
-    expect(result[0].startIndex).be.equal(16)
-
-    expect(result[0]).have.property('endIndex')
-    expect(result[0].endIndex).be.equal(25)
+    expect(result[0]).be.equal('flx flx1')
   })
 
   it('should extract an expression enclose in double quote', () => {
-    const result = extractExpression(` <div className="flx flx1"></div> `, '"')
+    const result = extractExpressions(` <div className="flx flx1"></div> `, /"/)
     expect(result).be.a('array')
     expect(result).be.length(1)
-    expect(result[0]).be.a('object')
-    expect(result[0]).have.property('expression')
-    expect(result[0].expression).be.equal('flx flx1')
-
-    expect(result[0]).have.property('startIndex')
-    expect(result[0].startIndex).be.equal(16)
-
-    expect(result[0]).have.property('endIndex')
-    expect(result[0].endIndex).be.equal(25)
+    expect(result[0]).be.equal('flx flx1')
+  })
+  it('should extract an expression enclose in double quote', () => {
+    const result = extractExpressions(` <div className="flx flx1" className="tc"></div> `, /"/)
+    expect(result).be.a('array')
+    expect(result).be.length(2)
+    expect(result[0]).be.equal('flx flx1')
+    expect(result[1]).be.equal('tc')
   })
 
   it('should extract an expression enclose in {}', () => {
-    const result = extractExpression(` <div className={"flx flx1"}></div> `, '{', '}')
+    const result = extractExpressions(` <div className={"flx flx1"}></div> `, /{/, /}/)
     expect(result).be.a('array')
     expect(result).be.length(1)
-    expect(result[0]).be.a('object')
-    expect(result[0]).have.property('expression')
-    expect(result[0].expression).be.equal('"flx flx1"')
+    expect(result[0]).be.equal('"flx flx1"')
+  })
 
-    expect(result[0]).have.property('startIndex')
-    expect(result[0].startIndex).be.equal(16)
+  it('should extract an expression enclose in multiple {}', () => {
+    const result = extractExpressions(` <div className={"flx flx1"} {"test"}></div> `, /{/, /}/)
+    expect(result).be.a('array')
+    expect(result).be.length(2)
+    expect(result[0]).be.equal('"flx flx1"')
+    expect(result[1]).be.equal('"test"')
+  })
 
-    expect(result[0]).have.property('endIndex')
-    expect(result[0].endIndex).be.equal(27)
+  it('should extract an expression enclose in inner {}', () => {
+    const result = extractExpressions(` <div className={"flx {"test"} flx1"}></div> `, /{/, /}/)
+    expect(result).be.a('array')
+    expect(result).be.length(2)
+    expect(result[0]).be.equal('"test"')
+    expect(result[1]).be.equal('"flx {"test"} flx1"')
   })
 
   it('should extract an expression enclose in ${}', () => {
-    const result = extractExpression(' <div className={"flx ${test} flx1"}></div> ', '${', '}')
+    const result = extractExpressions(' <div className={"flx ${test} flx1"}></div> ', /\${/, /}/)
     expect(result).be.a('array')
     expect(result).be.length(1)
-    expect(result[0]).be.a('object')
-    expect(result[0]).have.property('expression')
-    expect(result[0].expression).be.equal('test')
-
-    expect(result[0]).have.property('startIndex')
-    expect(result[0].startIndex).be.equal(22)
-
-    expect(result[0]).have.property('endIndex')
-    expect(result[0].endIndex).be.equal(28)
+    expect(result[0]).be.equal('test')
   })
 
   it('should extract all expressions enclose in ${}', () => {
-    const result = extractExpression(' <div className={"flx ${test} ${test1} flx1"}></div> ', '${', '}')
-
+    const result = extractExpressions(' <div className={"flx ${test} ${test1} flx1"}></div> ', /\${/, /}/)
     expect(result).be.a('array')
     expect(result).be.length(2)
-    expect(result[0]).be.a('object')
-    expect(result[0]).have.property('expression')
-    expect(result[0].expression).be.equal('test')
-
-    expect(result[0]).have.property('startIndex')
-    expect(result[0].startIndex).be.equal(22)
-
-    expect(result[0]).have.property('endIndex')
-    expect(result[0].endIndex).be.equal(28)
-
-    expect(result[1]).be.a('object')
-    expect(result[1]).have.property('expression')
-    expect(result[1].expression).be.equal('test1')
-
-    expect(result[1]).have.property('startIndex')
-    expect(result[1].startIndex).be.equal(30)
-
-    expect(result[1]).have.property('endIndex')
-    expect(result[1].endIndex).be.equal(37)
+    expect(result[0]).be.equal('test')
+    expect(result[1]).be.equal('test1')
   })
 
 })

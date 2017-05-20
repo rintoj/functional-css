@@ -39,7 +39,7 @@
     "label-position": true,
     "no-arg": true,
     "no-bitwise": true,
-    "no-conditional-assignment": true,
+    "no-conditional-assignment": false,
     "no-console": [
       true,
       "debug",

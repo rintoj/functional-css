@@ -25,6 +25,7 @@ module.exports = {
   } : {
     test: path.resolve('./src/parser/index.spec.ts')
   }),
+  devtool: !isProd ? 'source-map' : undefined,
   output: {
     path: path.resolve('./dist'),
     filename: '[name].js',

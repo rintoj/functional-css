@@ -1,5 +1,6 @@
 import * as classNameParser from './class-name-parser'
 import * as fileParser from './file-parser'
+import * as jsParser from './js-parser'
 
 const { fetchFileNames, readFiles } = fileParser
 const { parseClassNames } = classNameParser
@@ -16,4 +17,4 @@ Promise.resolve()
   .then(files => readFiles(files))
   .then(files => files.map(file => parseClassNames(file.content)))
 
-export = { fileParser, classNameParser }
+export = { fileParser, classNameParser, jsParser }
