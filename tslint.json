@@ -75,7 +75,7 @@
       150
     ],
     "cyclomatic-complexity": [
-      true
+      false
     ],
     "no-require-imports": false,
     "no-trailing-whitespace": true,
